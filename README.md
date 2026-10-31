@@ -6,7 +6,7 @@ Interactive Mobile Topographic Web Map, 1:50,000 UTM Zone 32N Print Atlas, and I
 
 ## 📱 Live Interactive Mobile Map
 Open directly on your phone or desktop:
-👉 **[Interactive Web Map & Profile Scrubber](https://rotemwfi.github.io/austria-2027/)** *(or your configured GitHub Pages URL)*
+👉 **[Interactive Web Map & Profile Scrubber](https://rotemwfi.github.io/stubai-high-route-2027/)**
 
 ### Features
 - **Mobile Optimized**: Full-screen responsive map layout with touch-friendly floating action controls.

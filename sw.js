@@ -1,4 +1,4 @@
-const CACHE_NAME = 'stubai-pwa-v1';
+const CACHE_NAME = 'stubai-pwa-v4';
 const TILE_CACHE = 'stubai-tiles-v1';
 
 const APP_SHELL = [
@@ -15,10 +15,11 @@ const APP_SHELL = [
 ];
 
 self.addEventListener('install', (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(APP_SHELL);
-    }).then(() => self.skipWaiting())
+    })
   );
 });
 
@@ -39,7 +40,7 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // Map Tiles (OpenTopoMap) -> Cache First, fallback to Network
+  // 1. Map Tiles (OpenTopoMap) -> Cache First, fallback to Network
   if (url.hostname.includes('tile.opentopomap.org')) {
     event.respondWith(
       caches.open(TILE_CACHE).then(async (cache) => {
@@ -63,28 +64,38 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // App Shell & Assets -> Cache First with Network Fallback
-  event.respondWith(
-    caches.match(event.request).then(async (response) => {
-      if (response) {
-        // Return from cache, revalidate in background if online
-        fetch(event.request).then((netRes) => {
-          if (netRes && netRes.status === 200) {
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, netRes));
-          }
-        }).catch(() => {});
-        return response;
-      }
-      return fetch(event.request).then((networkResponse) => {
+  // 2. Navigation / HTML pages (index.html, root) -> NETWORK FIRST with Cache Fallback
+  // This guarantees that when online, the user ALWAYS gets the latest updated version immediately!
+  if (event.request.mode === 'navigate' || url.pathname.endsWith('.html') || url.pathname.endsWith('/')) {
+    event.respondWith(
+      fetch(event.request).then((networkResponse) => {
         if (networkResponse && networkResponse.status === 200) {
           const clone = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
         }
         return networkResponse;
-      });
-    }).catch(() => {
-      // Offline fallback
-      return caches.match('./index.html');
+      }).catch(async () => {
+        // Offline: Serve cached page
+        const cached = await caches.match(event.request);
+        if (cached) return cached;
+        const fallback = await caches.match('./index.html') || await caches.match('/');
+        return fallback;
+      })
+    );
+    return;
+  }
+
+  // 3. Static Assets (CSS, JS, GPX, Icons) -> Stale-While-Revalidate (Cache First + background refresh)
+  event.respondWith(
+    caches.match(event.request).then((cachedResponse) => {
+      const fetchPromise = fetch(event.request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse.clone()));
+        }
+        return networkResponse;
+      }).catch(() => null);
+
+      return cachedResponse || fetchPromise;
     })
   );
 });

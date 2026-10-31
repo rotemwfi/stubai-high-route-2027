@@ -1233,6 +1233,7 @@ html_content = f"""<!DOCTYPE html>
     <div class="drawer-section">
       <div class="drawer-section-title">אופליין והורדות</div>
       <button class="btn" id="btn-offline" onclick="startOfflineDownload()" style="background: #0284c7; border: 1px solid #38bdf8; font-weight: bold; color: white;">📲 שמירה לאופליין (PWA)</button>
+      <button class="btn btn-outline" onclick="forceAppRefresh()">🔄 בדיקת עדכונים ורענון</button>
       <a class="btn btn-outline" href="Stubai_High_Route_Complete_Map_Book_Final_Atlas.pdf" target="_blank">📥 אטלס מפות מלא (PDF)</a>
       <a class="btn btn-outline" href="Stubai_High_Route_Overview_UTM_v3.pdf" target="_blank">🗺️ פוסטר סקירה ראשי (PDF)</a>
     </div>
@@ -1293,6 +1294,7 @@ const openTopoMap = L.tileLayer('https://{{s}}.tile.opentopomap.org/{{z}}/{{x}}/
 }}).addTo(map);
 
 const rawTrack = {json.dumps(track_points)};
+const totalDistKm = {total_dist_km};
 const trackPoints = rawTrack.map(p => ({{ lat: p[0], lon: p[1], ele: p[2], dist: p[3] }}));
 const trackCoords = trackPoints.map(p => [p.lat, p.lon]);
 
@@ -1550,7 +1552,7 @@ function drawProfile(hoverIndex = null) {{
 
   const minEle = 1200;
   const maxEle = 3000;
-  const maxDist = total_dist_km;
+  const maxDist = totalDistKm;
 
   function getX(dist) {{ return padLeft + (dist / maxDist) * chartW; }}
   function getY(ele) {{ return padTop + chartH - ((ele - minEle) / (maxEle - minEle)) * chartH; }}
@@ -1659,7 +1661,7 @@ function handleProfileEvent(clientX) {{
     return;
   }}
 
-  const targetDist = (relX / chartW) * total_dist_km;
+  const targetDist = (relX / chartW) * totalDistKm;
   let closestIdx = 0;
   let minDiff = Infinity;
   for (let i = 0; i < trackPoints.length; i++) {{
@@ -1862,8 +1864,34 @@ const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
 if ('serviceWorker' in navigator) {{
   window.addEventListener('load', () => {{
-    navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW reg error:', err));
+    navigator.serviceWorker.register('./sw.js').then((reg) => {{
+      reg.update(); // Always check for fresh Service Worker on load
+    }}).catch(err => console.log('SW reg error:', err));
   }});
+
+  // When new Service Worker activates, reload immediately to get fresh app
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {{
+    if (!refreshing) {{
+      refreshing = true;
+      window.location.reload();
+    }}
+  }});
+}}
+
+function forceAppRefresh() {{
+  if ('serviceWorker' in navigator) {{
+    navigator.serviceWorker.getRegistrations().then(regs => {{
+      for (let r of regs) r.unregister();
+    }}).then(() => {{
+      if ('caches' in window) {{
+        caches.keys().then(keys => Promise.all(keys.filter(k => k.startsWith('stubai-pwa')).map(k => caches.delete(k))));
+      }}
+      window.location.reload(true);
+    }});
+  }} else {{
+    window.location.reload(true);
+  }}
 }}
 
 window.addEventListener('beforeinstallprompt', (e) => {{

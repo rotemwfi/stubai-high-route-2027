@@ -655,7 +655,7 @@ html_content = f"""<!DOCTYPE html>
       <div style="color: #64748b; font-size: 10px; margin-top: 2px;" id="wgs-coords">Lat/Lon: --</div>
     </div>
     <div id="controls">
-      <button class="btn" id="btn-offline" style="background: #0284c7; border: 1px solid #38bdf8; font-weight: bold; color: white;">📲 Make Available Offline</button>
+      <button class="btn" id="btn-offline" style="background: #0284c7; border: 1px solid #38bdf8; font-weight: bold; color: white;">📲 Install App</button>
       <button class="btn btn-outline" id="toggle-profile-btn">📈 Toggle Elevation Profile</button>
       <button class="btn btn-outline" id="toggle-grid-btn">🧭 Toggle 1 km UTM Grid</button>
       <a class="btn" href="Stubai_High_Route_Complete_Map_Book_Final_Atlas.pdf" target="_blank">📥 Download Complete Atlas (PDF)</a>
@@ -681,7 +681,7 @@ html_content = f"""<!DOCTYPE html>
     
     <!-- FLOATING ACTION BUTTONS (BOTTOM RIGHT) -->
     <div id="fab-group">
-      <div class="fab" id="fab-offline" style="border-color: #38bdf8; color: #38bdf8;">📲 Save Offline</div>
+      <div class="fab" id="fab-offline" style="border-color: #38bdf8; color: #38bdf8;">📲 Install App</div>
       <div class="fab" id="fab-profile">📈 Profile</div>
       <div class="fab" id="fab-grid">🧭 Grid</div>
     </div>
@@ -1674,8 +1674,8 @@ async function checkCachedStatus() {{
         const sampleTile = offlineTiles[Math.floor(offlineTiles.length / 2)];
         const match = await cache.match(`https://a.tile.opentopomap.org/${{sampleTile[0]}}/${{sampleTile[1]}}/${{sampleTile[2]}}.png`);
         if (match) {{
-          if (btnOffline) btnOffline.innerText = "✅ Map Available Offline";
-          if (fabOffline) fabOffline.innerText = "✅ Offline Ready";
+          if (btnOffline) btnOffline.innerText = "📲 Install App";
+          if (fabOffline) fabOffline.innerText = "📲 Install App";
         }}
       }}
     }} catch(e) {{}}
@@ -1746,8 +1746,8 @@ async function startOfflineDownload() {{
   modalTitle.innerText = "Map is 100% Offline Ready!";
   modalStatus.innerHTML = "<strong>All 5 stages of the Stubai High Route are now stored on your phone!</strong><br/><br/>You can view the full topographic map, follow the trail, and use GPS even with zero cellular signal or in Airplane Mode.";
   modalClose.style.display = 'block';
-  if (btnOffline) btnOffline.innerText = "✅ Map Available Offline";
-  if (fabOffline) fabOffline.innerText = "✅ Offline Ready";
+  if (btnOffline) btnOffline.innerText = "📲 Install App";
+  if (fabOffline) fabOffline.innerText = "📲 Install App";
 
   if (isIOS) {{
     iosGuide.style.display = 'block';

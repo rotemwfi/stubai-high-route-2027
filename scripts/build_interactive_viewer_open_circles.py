@@ -853,9 +853,9 @@ html_content = f"""<!DOCTYPE html>
 
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
           <div class="gear-filters">
-            <span class="filter-pill active" onclick="setGearFilter('all')">הכל</span>
-            <span class="filter-pill" onclick="setGearFilter('unpacked')">טרם נארז</span>
-            <span class="filter-pill" onclick="setGearFilter('packed')">נארז</span>
+            <span class="filter-pill active" onclick="setGearFilter('all', this)">הכל</span>
+            <span class="filter-pill" onclick="setGearFilter('unpacked', this)">טרם נארז</span>
+            <span class="filter-pill" onclick="setGearFilter('packed', this)">נארז</span>
           </div>
           <button class="card-btn-map" onclick="resetGearChecklist()">🔄 איפוס</button>
         </div>
@@ -1842,58 +1842,57 @@ function saveGearState() {{
 }}
 
 function renderGearList() {{
-  const container = document.getElementById('gear-list-container');
-  const searchEl = document.getElementById('gear-search');
+  const container = document.getElementById('gear-items-list');
   if (!container) return;
-  const query = searchEl ? searchEl.value.trim().toLowerCase() : '';
 
   const totalCount = gearState.length;
   const packedCount = gearState.filter(g => g.checked).length;
   const pct = totalCount > 0 ? Math.round((packedCount / totalCount) * 100) : 0;
 
-  const countText = document.getElementById('gear-count-text');
-  const pctText = document.getElementById('gear-pct-text');
-  const progFill = document.getElementById('gear-progress-fill');
-  if (countText) countText.innerText = `${{packedCount}} / ${{totalCount}} נארזו`;
+  const countText = document.getElementById('gear-counter');
+  const pctText = document.getElementById('gear-percent');
+  const progFill = document.getElementById('gear-progress-bar');
+  if (countText) countText.innerText = `${{packedCount}} / ${{totalCount}} פריטים נארזו`;
   if (pctText) pctText.innerText = `${{pct}}%`;
   if (progFill) progFill.style.width = `${{pct}}%`;
 
   const filtered = gearState.filter(item => {{
-    if (currentGearFilter === 'personal' && item.cat !== 'ציוד אישי') return false;
-    if (currentGearFilter === 'team' && item.cat !== 'ציוד צוותי') return false;
     if (currentGearFilter === 'unpacked' && item.checked) return false;
-    if (query && !item.name.toLowerCase().includes(query) && !(item.notes || '').toLowerCase().includes(query)) return false;
+    if (currentGearFilter === 'packed' && !item.checked) return false;
     return true;
   }});
 
   container.innerHTML = '';
-  filtered.forEach(item => {{
-    const row = document.createElement('div');
-    row.className = 'gear-item-row' + (item.checked ? ' checked' : '');
-    const isTeam = item.cat === 'ציוד צוותי';
-    row.innerHTML = `
-      <div class="gear-checkbox">${{item.checked ? '✓' : ''}}</div>
-      <div class="gear-info">
-        <div class="gear-name">${{item.name}}</div>
-        ${{item.notes ? `<div class="gear-notes">${{item.notes}}</div>` : ''}}
-      </div>
-      <div class="gear-meta">
-        ${{item.qty ? `<span class="gear-qty-badge">כמות: ${{item.qty}}</span>` : ''}}
-        <span class="gear-cat-badge ${{isTeam ? 'team' : ''}}">${{item.cat}}</span>
-      </div>
-    `;
-    row.addEventListener('click', () => {{
-      item.checked = !item.checked;
-      saveGearState();
-      renderGearList();
+  const categories = ['ציוד אישי', 'ציוד צוותי'];
+  categories.forEach(catName => {{
+    const catItems = filtered.filter(i => i.cat === catName);
+    if (catItems.length === 0) return;
+
+    const groupTitle = document.createElement('div');
+    groupTitle.className = 'gear-group-title';
+    groupTitle.innerText = (catName === 'ציוד אישי' ? '🎒 ' : '⛺ ') + catName + ` (${{catItems.length}})`;
+    container.appendChild(groupTitle);
+
+    catItems.forEach(item => {{
+      const row = document.createElement('div');
+      row.className = 'gear-item-row' + (item.checked ? ' checked' : '');
+      row.innerHTML = `
+        <div class="gear-checkbox">${{item.checked ? '✓' : ''}}</div>
+        <div class="gear-text">${{item.name}}</div>
+      `;
+      row.addEventListener('click', () => {{
+        item.checked = !item.checked;
+        saveGearState();
+        renderGearList();
+      }});
+      container.appendChild(row);
     }});
-    container.appendChild(row);
   }});
 }}
 
 function setGearFilter(filterType, btnEl) {{
   currentGearFilter = filterType;
-  document.querySelectorAll('.gear-filter-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
   if (btnEl) btnEl.classList.add('active');
   renderGearList();
 }}
@@ -1906,24 +1905,17 @@ function resetGearChecklist() {{
 }}
 
 function addCustomGearItem() {{
-  const nameInput = document.getElementById('new-gear-name');
-  const qtyInput = document.getElementById('new-gear-qty');
-  const catInput = document.getElementById('new-gear-cat');
-  const notesInput = document.getElementById('new-gear-notes');
+  const nameInput = document.getElementById('new-item-input');
   if (!nameInput || !nameInput.value.trim()) return;
   const newItem = {{
-    id: Date.now(),
-    cat: catInput ? catInput.value : 'ציוד אישי',
+    id: 'custom_' + Date.now(),
+    cat: 'ציוד אישי',
     name: nameInput.value.trim(),
-    qty: qtyInput && qtyInput.value.trim() ? qtyInput.value.trim() : '1',
-    notes: notesInput ? notesInput.value.trim() : '',
     checked: false
   }};
   gearState.push(newItem);
   saveGearState();
   nameInput.value = '';
-  if (qtyInput) qtyInput.value = '';
-  if (notesInput) notesInput.value = '';
   renderGearList();
 }}
 

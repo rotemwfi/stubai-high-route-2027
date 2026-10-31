@@ -15,6 +15,12 @@ if offline_tiles_path.exists():
 else:
     offline_tiles = []
 
+gear_items_path = Path("config/gear_items.json")
+if gear_items_path.exists():
+    gear_items = json.loads(gear_items_path.read_text(encoding="utf-8"))
+else:
+    gear_items = []
+
 transformer = pyproj.Transformer.from_crs("EPSG:4326", "EPSG:32632", always_xy=True)
 to_wgs = pyproj.Transformer.from_crs("EPSG:32632", "EPSG:4326", always_xy=True)
 
@@ -444,6 +450,136 @@ html_content = f"""<!DOCTYPE html>
   .badge-night {{ background: #1d4ed8; color: white; }}
   .grid-label {{ background: rgba(15, 23, 42, 0.85); color: #38bdf8; font-family: monospace; font-size: 10px; font-weight: bold; padding: 2px 4px; border-radius: 3px; border: 1px solid #0284c7; white-space: nowrap; }}
 
+  /* TRIP MANAGEMENT FOLDING MENU & OVERLAY PANELS */
+  #main-nav-menu {{
+    padding: 10px 14px;
+    border-bottom: 1px solid #334155;
+    background: #0b1120;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    direction: rtl;
+  }}
+  .nav-cat-btn {{
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: #e2e8f0;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: all 0.15s;
+  }}
+  .nav-cat-btn:hover, .nav-cat-btn:active {{ border-color: #38bdf8; background: #24324a; }}
+  .nav-cat-btn.active {{ background: #0284c7; border-color: #38bdf8; color: #ffffff; }}
+
+  .content-overlay-panel {{
+    display: none;
+    position: absolute;
+    inset: 0;
+    z-index: 1500;
+    background: #090d16;
+    color: #f1f5f9;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }}
+  .content-overlay-panel.active {{
+    display: block;
+  }}
+  .panel-sticky-bar {{
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid #334155;
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    direction: rtl;
+  }}
+  .panel-body {{
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 16px 16px 60px 16px;
+    direction: rtl;
+  }}
+  .view-hero {{
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    border: 1px solid #334155;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+  }}
+  .view-hero h2 {{ margin: 0 0 4px 0; font-size: 17px; color: #38bdf8; }}
+  .view-hero p {{ margin: 0; font-size: 12px; color: #cbd5e1; line-height: 1.45; }}
+
+  .timeline-card {{
+    background: #0f172a;
+    border: 1px solid #334155;
+    border-right: 4px solid #38bdf8;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }}
+  .timeline-card.travel-day {{ border-right-color: #a855f7; }}
+  .timeline-card.rest-day {{ border-right-color: #10b981; }}
+  .card-top {{ display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }}
+  .card-date {{ font-size: 11.5px; font-weight: 700; color: #38bdf8; background: rgba(56, 189, 248, 0.12); padding: 2px 8px; border-radius: 10px; }}
+  .card-tag {{ font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 4px; background: #1e293b; color: #94a3b8; }}
+  .card-title {{ font-size: 14.5px; font-weight: 700; color: #f8fafc; margin-bottom: 6px; }}
+  .card-metrics {{ display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; font-size: 11px; }}
+  .metric-badge {{ background: #1e293b; border: 1px solid #334155; padding: 2px 7px; border-radius: 5px; color: #cbd5e1; }}
+  .metric-badge strong {{ color: #38bdf8; }}
+  .card-desc {{ font-size: 12px; color: #94a3b8; line-height: 1.45; margin-bottom: 8px; }}
+  .card-btn-map {{
+    background: #1e293b; border: 1px solid #334155; color: #38bdf8; padding: 5px 10px;
+    border-radius: 6px; font-size: 11px; font-weight: 600; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 4px;
+  }}
+  .card-btn-map:hover, .card-btn-map:active {{ background: #0284c7; color: white; }}
+
+  /* GEAR CHECKLIST */
+  .gear-summary {{ background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 12px 14px; margin-bottom: 12px; }}
+  .progress-wrap {{ margin-top: 8px; background: #1e293b; border-radius: 8px; height: 9px; overflow: hidden; }}
+  .progress-fill {{ background: linear-gradient(90deg, #10b981, #38bdf8); height: 100%; width: 0%; transition: width 0.25s ease; }}
+  .gear-filters {{ display: flex; gap: 6px; }}
+  .filter-pill {{ background: #1e293b; border: 1px solid #334155; color: #94a3b8; padding: 4px 11px; border-radius: 14px; font-size: 11px; cursor: pointer; }}
+  .filter-pill.active {{ background: #0284c7; color: white; border-color: #38bdf8; font-weight: 600; }}
+  .gear-group-title {{ font-size: 13px; font-weight: 700; color: #38bdf8; margin: 14px 0 8px 0; padding-bottom: 4px; border-bottom: 1px solid #1e293b; }}
+  .gear-item-row {{
+    background: #0f172a; border: 1px solid #1e293b; border-radius: 8px; padding: 9px 12px;
+    margin-bottom: 6px; display: flex; align-items: center; gap: 10px; cursor: pointer;
+  }}
+  .gear-checkbox {{
+    width: 19px; height: 19px; border-radius: 5px; border: 2px solid #64748b;
+    display: flex; align-items: center; justify-content: center; font-size: 12px; color: white; flex-shrink: 0;
+  }}
+  .gear-item-row.checked .gear-checkbox {{ background: #10b981; border-color: #10b981; }}
+  .gear-text {{ font-size: 12.5px; color: #f1f5f9; flex: 1; }}
+  .gear-item-row.checked .gear-text {{ text-decoration: line-through; color: #64748b; }}
+
+  /* HUTS DIRECTORY */
+  .hut-detail-card {{ background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 14px; margin-bottom: 12px; }}
+  .hut-header {{ display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }}
+  .hut-name {{ font-size: 15px; font-weight: 700; color: #f8fafc; }}
+  .hut-badge-night {{ background: #1d4ed8; color: white; font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }}
+  .hut-key-stats {{
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px;
+    background: #1e293b; border-radius: 8px; padding: 9px; margin-bottom: 10px; font-size: 11.5px;
+  }}
+  .hut-stat-label {{ color: #94a3b8; font-size: 10px; }}
+  .hut-stat-val {{ color: #f1f5f9; font-weight: 600; }}
+  .hut-stat-val.price {{ color: #38bdf8; font-weight: 700; font-size: 12.5px; }}
+  .hut-desc {{ font-size: 12px; color: #cbd5e1; line-height: 1.45; margin-bottom: 10px; }}
+
   /* ==========================================
      MOBILE RESPONSIVE BREAKPOINT (< 768px)
      ========================================== */
@@ -503,9 +639,15 @@ html_content = f"""<!DOCTYPE html>
     <div id="sidebar-header">
       <div>
         <h1>Stubai High Trail (2027)</h1>
-        <p>Topographic Navigator & Profile</p>
+        <p>ניהול מסע • Topographic Navigator</p>
       </div>
       <button id="close-sidebar" title="Close Menu">✕</button>
+    </div>
+    <div id="main-nav-menu">
+      <button class="nav-cat-btn active" data-panel="map" onclick="switchPanel('map')">🗺️ מפה</button>
+      <button class="nav-cat-btn" data-panel="schedule" onclick="switchPanel('schedule')">📅 לוח זמנים</button>
+      <button class="nav-cat-btn" data-panel="gear" onclick="switchPanel('gear')">🎒 רשימת ציוד</button>
+      <button class="nav-cat-btn" data-panel="huts" onclick="switchPanel('huts')">🏡 בקתות</button>
     </div>
     <div id="coords-box">
       <div><strong>CURSOR UTM ZONE 32N:</strong></div>
@@ -531,7 +673,7 @@ html_content = f"""<!DOCTYPE html>
     <!-- FLOATING TOP BAR -->
     <div id="floating-top-bar">
       <div class="floating-pill" id="menu-trigger">
-        <span>☰</span> <strong>Huts & Guide</strong>
+        <span>☰</span> <strong>תפריט</strong>
       </div>
       <div id="floating-coords">Stubai 50.2 km</div>
       <div id="gps-btn" title="Find My Location">🎯</div>
@@ -557,6 +699,250 @@ html_content = f"""<!DOCTYPE html>
       </div>
       <div id="profile-chart-wrap">
         <canvas id="profile-canvas"></canvas>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         OVERLAY PANEL 1: לוח זמנים (SCHEDULE)
+         ========================================== -->
+    <div id="panel-schedule" class="content-overlay-panel">
+      <div class="panel-sticky-bar">
+        <button class="card-btn-map" onclick="openMobileSidebar()">☰ תפריט</button>
+        <strong style="font-size: 14px; color: #38bdf8;">📅 לוח זמנים</strong>
+        <button class="card-btn-map" onclick="switchPanel('map')">🗺️ חזרה למפה</button>
+      </div>
+      <div class="panel-body">
+        <div class="view-hero">
+          <h2>📅 לוח זמנים ומסלול הטרק</h2>
+          <p>מסע של 5 ימי הליכה אלפיניים בעמק שטובאי, טירול, אוסטריה (05.09.2027 – 13.09.2027).</p>
+        </div>
+
+        <div class="timeline-card travel-day">
+          <div class="card-top">
+            <span class="card-date">05.09.2027 • יום ראשון</span>
+            <span class="card-tag">טיסות והגעה</span>
+          </div>
+          <div class="card-title">✈️ טיסה למינכן ונסיעה לשטובאי (ליד אינסברוק)</div>
+          <div class="card-desc">טיסה למינכן, נסיעה לעמק שטובאי (Stubaital), התארגנות וארוחת ערב צוותית לפני היציאה לטרק.</div>
+        </div>
+
+        <div class="timeline-card">
+          <div class="card-top">
+            <span class="card-date">06.09.2027 • יום שני</span>
+            <span class="card-tag">יום הליכה 1</span>
+          </div>
+          <div class="card-title">⛰️ תחילת מסלול: Oberissalm ➔ Franz-Senn-Hütte</div>
+          <div class="card-metrics">
+            <span class="metric-badge">מרחק: <strong>10.3 ק"מ</strong></span>
+            <span class="metric-badge">עלייה: <strong>600+ מ'</strong></span>
+            <span class="metric-badge">ירידה: <strong>190- מ'</strong></span>
+            <span class="metric-badge">זמן: <strong>~3.5 שעות</strong></span>
+          </div>
+          <div class="card-desc">כניסה לעמק Alpeiner Tal ועלייה לבקתת פרנץ סן (2,147 מ'). לינה בבקתה (לילה 1).</div>
+          <button class="card-btn-map" onclick="jumpToStage(1)">📍 הצג יום 1 במפה</button>
+        </div>
+
+        <div class="timeline-card">
+          <div class="card-top">
+            <span class="card-date">07.09.2027 • יום שלישי</span>
+            <span class="card-tag">יום הליכה 2</span>
+          </div>
+          <div class="card-title">⛰️ יום 2: Franz-Senn-Hütte ➔ Neue Regensburger Hütte</div>
+          <div class="card-metrics">
+            <span class="metric-badge">מרחק: <strong>9.3 ק"מ</strong></span>
+            <span class="metric-badge">עלייה: <strong>880+ מ'</strong></span>
+            <span class="metric-badge">ירידה: <strong>740- מ'</strong></span>
+            <span class="metric-badge">זמן: <strong>~4.5 שעות</strong></span>
+          </div>
+          <div class="card-desc">חציית מעבר ההרים Schrimmennieder (2,714 מ') וירידה לבקתת נויה רגנסבורגר (2,286 מ'). לינה בבקתה (לילה 2).</div>
+          <button class="card-btn-map" onclick="jumpToStage(2)">📍 הצג יום 2 במפה</button>
+        </div>
+
+        <div class="timeline-card">
+          <div class="card-top">
+            <span class="card-date">08.09.2027 • יום רביעי</span>
+            <span class="card-tag">יום הליכה 3</span>
+          </div>
+          <div class="card-title">⛰️ יום 3: Neue Regensburger Hütte ➔ Dresdner Hütte</div>
+          <div class="card-metrics">
+            <span class="metric-badge">מרחק: <strong>12.5 ק"מ</strong></span>
+            <span class="metric-badge">עלייה: <strong>950+ מ'</strong></span>
+            <span class="metric-badge">ירידה: <strong>930- מ'</strong></span>
+            <span class="metric-badge">זמן: <strong>~6.5 שעות</strong></span>
+          </div>
+          <div class="card-desc">מעבר ליד אגם Falbesoner See, חציית מעבר Grawagrubennieder (2,880 מ') וירידה לבקתת דרזדנר (2,308 מ'). לינה בבקתה (לילה 3).</div>
+          <button class="card-btn-map" onclick="jumpToStage(3)">📍 הצג יום 3 במפה</button>
+        </div>
+
+        <div class="timeline-card">
+          <div class="card-top">
+            <span class="card-date">09.09.2027 • יום חמישי</span>
+            <span class="card-tag">יום הליכה 4</span>
+          </div>
+          <div class="card-title">⛰️ יום 4: Dresdner Hütte ➔ Sulzenauhütte</div>
+          <div class="card-metrics">
+            <span class="metric-badge">מרחק: <strong>6.0 ק"מ</strong></span>
+            <span class="metric-badge">עלייה: <strong>480+ מ'</strong></span>
+            <span class="metric-badge">ירידה: <strong>600- מ'</strong></span>
+            <span class="metric-badge">זמן: <strong>~3.5 שעות</strong></span>
+          </div>
+          <div class="card-desc">טיפוס לאוכף Peiljoch (2,676 מ') וירידה אל האגם הקרחוני ובקתת זולצנאו (2,191 מ'). לינה בבקתה (לילה 4).</div>
+          <button class="card-btn-map" onclick="jumpToStage(4)">📍 הצג יום 4 במפה</button>
+        </div>
+
+        <div class="timeline-card">
+          <div class="card-top">
+            <span class="card-date">10.09–11.09.2027 • שישי–שבת</span>
+            <span class="card-tag">סוף מסלול (יום 5)</span>
+          </div>
+          <div class="card-title">⛰️ סוף מסלול: Sulzenauhütte ➔ ירידה לעמק Ranalt</div>
+          <div class="card-metrics">
+            <span class="metric-badge">מרחק: <strong>12.2 ק"מ</strong></span>
+            <span class="metric-badge">עלייה: <strong>550+ מ'</strong></span>
+            <span class="metric-badge">ירידה: <strong>1,480- מ'</strong></span>
+            <span class="metric-badge">זמן: <strong>~5 שעות</strong></span>
+          </div>
+          <div class="card-desc">מעבר דרך Nürnberger Hütte / מפל Grawa וירידה לסיום המסלול ב-Ranalt.</div>
+          <button class="card-btn-map" onclick="jumpToStage(5)">📍 הצג יום 5 במפה</button>
+        </div>
+
+        <div class="timeline-card rest-day">
+          <div class="card-top">
+            <span class="card-date">12.09.2027 • שבת</span>
+            <span class="card-tag">שבת מנוחה</span>
+          </div>
+          <div class="card-title">🌲 שבת בשטובאי</div>
+          <div class="card-desc">מנוחה והתרגעות בעמק שטובאי לאחר סיום הטרק.</div>
+        </div>
+
+        <div class="timeline-card travel-day">
+          <div class="card-top">
+            <span class="card-date">13.09.2027 • יום ראשון</span>
+            <span class="card-tag">טיסה חזרה</span>
+          </div>
+          <div class="card-title">✈️ טיסה חזרה ממינכן לתל אביב</div>
+          <div class="card-desc">נסיעה לנמל התעופה של מינכן וטיסה חזרה לישראל.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         OVERLAY PANEL 2: רשימת ציוד (GEAR)
+         ========================================== -->
+    <div id="panel-gear" class="content-overlay-panel">
+      <div class="panel-sticky-bar">
+        <button class="card-btn-map" onclick="openMobileSidebar()">☰ תפריט</button>
+        <strong style="font-size: 14px; color: #38bdf8;">🎒 רשימת ציוד</strong>
+        <button class="card-btn-map" onclick="switchPanel('map')">🗺️ חזרה למפה</button>
+      </div>
+      <div class="panel-body">
+        <div class="view-hero">
+          <h2>🎒 רשימת ציוד אינטראקטיבית</h2>
+          <p>סמנו ב-V כל פריט שנארז. הסימונים נשמרים אוטומטית בזיכרון הטלפון גם ללא אינטרנט.</p>
+        </div>
+
+        <div class="gear-summary">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 13px; font-weight: 700;" id="gear-counter">0 / 0 פריטים נארזו</span>
+            <span style="font-size: 13px; font-weight: 700; color: #38bdf8;" id="gear-percent">0%</span>
+          </div>
+          <div class="progress-wrap">
+            <div class="progress-fill" id="gear-progress-bar"></div>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <div class="gear-filters">
+            <span class="filter-pill active" onclick="setGearFilter('all')">הכל</span>
+            <span class="filter-pill" onclick="setGearFilter('unpacked')">טרם נארז</span>
+            <span class="filter-pill" onclick="setGearFilter('packed')">נארז</span>
+          </div>
+          <button class="card-btn-map" onclick="resetGearChecklist()">🔄 איפוס</button>
+        </div>
+
+        <div id="gear-items-list"></div>
+
+        <div style="margin-top: 16px; background: #0f172a; border: 1px solid #334155; border-radius: 10px; padding: 10px; display: flex; gap: 8px;">
+          <input type="text" id="new-item-input" placeholder="הוסף פריט אישי..." style="flex: 1; background: #1e293b; border: 1px solid #334155; color: white; padding: 7px 10px; border-radius: 6px; font-size: 12.5px;">
+          <button class="card-btn-map" onclick="addCustomGearItem()">➕ הוסף</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         OVERLAY PANEL 3: בקתות (HUTS)
+         ========================================== -->
+    <div id="panel-huts" class="content-overlay-panel">
+      <div class="panel-sticky-bar">
+        <button class="card-btn-map" onclick="openMobileSidebar()">☰ תפריט</button>
+        <strong style="font-size: 14px; color: #38bdf8;">🏡 בקתות</strong>
+        <button class="card-btn-map" onclick="switchPanel('map')">🗺️ חזרה למפה</button>
+      </div>
+      <div class="panel-body">
+        <div class="view-hero">
+          <h2>🏡 בקתות הלינה בטרק</h2>
+          <p>4 בקתות אלפיניות לאורך המסלול. המחירים כוללים חצי פנסיון (HB).</p>
+        </div>
+
+        <div class="hut-detail-card">
+          <div class="hut-header">
+            <div class="hut-name">Franz-Senn-Hütte</div>
+            <span class="hut-badge-night">לילה 1</span>
+          </div>
+          <div class="hut-key-stats">
+            <div><div class="hut-stat-label">צ'ק-אין:</div><div class="hut-stat-val">06.09.2027</div></div>
+            <div><div class="hut-stat-label">מחיר משוער (HB):</div><div class="hut-stat-val price">120 €</div></div>
+            <div><div class="hut-stat-label">גובה:</div><div class="hut-stat-val">2,147 מ'</div></div>
+            <div><div class="hut-stat-label">סיום מקטע:</div><div class="hut-stat-val">יום 1 (10.3 ק"מ)</div></div>
+          </div>
+          <div class="hut-desc">בקתה מרווחת בעמק Alpeiner Tal עם חדר ייבוש נעליים, מקלחות חמות וארוחת ערב משותפת. סדין/ליינר חובה.</div>
+          <button class="card-btn-map" onclick="jumpToHutById('franz_senn')">📍 הצג במפה</button>
+        </div>
+
+        <div class="hut-detail-card">
+          <div class="hut-header">
+            <div class="hut-name">Neue Regensburger Hütte</div>
+            <span class="hut-badge-night">לילה 2</span>
+          </div>
+          <div class="hut-key-stats">
+            <div><div class="hut-stat-label">צ'ק-אין:</div><div class="hut-stat-val">07.09.2027</div></div>
+            <div><div class="hut-stat-label">מחיר משוער (HB):</div><div class="hut-stat-val price">120 €</div></div>
+            <div><div class="hut-stat-label">גובה:</div><div class="hut-stat-val">2,286 מ'</div></div>
+            <div><div class="hut-stat-label">סיום מקטע:</div><div class="hut-stat-val">יום 2 (9.3 ק"מ)</div></div>
+          </div>
+          <div class="hut-desc">ממוקמת על מצוק מול מפל אדיר עם מרפסת פנורמית ומטבח מצוין. סדין/ליינר ונעלי בית חובה.</div>
+          <button class="card-btn-map" onclick="jumpToHutById('regensburger')">📍 הצג במפה</button>
+        </div>
+
+        <div class="hut-detail-card">
+          <div class="hut-header">
+            <div class="hut-name">Dresdner Hütte</div>
+            <span class="hut-badge-night">לילה 3</span>
+          </div>
+          <div class="hut-key-stats">
+            <div><div class="hut-stat-label">צ'ק-אין:</div><div class="hut-stat-val">08.09.2027</div></div>
+            <div><div class="hut-stat-label">מחיר משוער (HB):</div><div class="hut-stat-val price">80 €</div></div>
+            <div><div class="hut-stat-label">גובה:</div><div class="hut-stat-val">2,308 מ'</div></div>
+            <div><div class="hut-stat-label">סיום מקטע:</div><div class="hut-stat-val">יום 3 (12.5 ק"מ)</div></div>
+          </div>
+          <div class="hut-desc">בקתה מודרנית וגדולה בסמוך לרכבל קרחון שטובאי. מקלחות חמות מרווחות, קליטה טובה ואפשרות לתשלום באשראי.</div>
+          <button class="card-btn-map" onclick="jumpToHutById('dresdner')">📍 הצג במפה</button>
+        </div>
+
+        <div class="hut-detail-card">
+          <div class="hut-header">
+            <div class="hut-name">Sulzenauhütte</div>
+            <span class="hut-badge-night">לילה 4</span>
+          </div>
+          <div class="hut-key-stats">
+            <div><div class="hut-stat-label">צ'ק-אין:</div><div class="hut-stat-val">09.09.2027</div></div>
+            <div><div class="hut-stat-label">מחיר משוער (HB):</div><div class="hut-stat-val price">100 €</div></div>
+            <div><div class="hut-stat-label">גובה:</div><div class="hut-stat-val">2,191 מ'</div></div>
+            <div><div class="hut-stat-label">סיום מקטע:</div><div class="hut-stat-val">יום 4 (6.0 ק"מ)</div></div>
+          </div>
+          <div class="hut-desc">בקתה אלפינית קלאסית בעמק זולצנאו ליד האגם הקרחוני והמפלים. מומלץ להצטייד במזומן באירו.</div>
+          <button class="card-btn-map" onclick="jumpToHutById('sulzenau')">📍 הצג במפה</button>
+        </div>
       </div>
     </div>
   </div>
@@ -742,6 +1128,7 @@ huts.forEach(h => {{
     }}).addTo(map);
 
     hutMarkerItems.push({{
+      id: h.id,
       marker: marker,
       overnight: true
     }});
@@ -767,6 +1154,7 @@ huts.forEach(h => {{
     <div class=\"wp-sub\">${{h.ele}} • ${{h.utm}}</div>
   `;
   card.addEventListener('click', () => {{
+    if (typeof switchPanel === 'function') switchPanel('map');
     const targetLat = isOvernight ? h.circle_lat : h.lat;
     const targetLon = isOvernight ? h.circle_lon : h.lon;
     map.flyTo([targetLat, targetLon], 16, {{ duration: 0.8 }});
@@ -1257,7 +1645,9 @@ const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
 if ('serviceWorker' in navigator) {{
   window.addEventListener('load', () => {{
-    navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW reg error:', err));
+    navigator.serviceWorker.register('./sw.js?v=4').then(reg => {{
+      reg.update();
+    }}).catch(err => console.log('SW reg error:', err));
   }});
 }}
 
@@ -1370,8 +1760,186 @@ if (modalClose) modalClose.addEventListener('click', () => {{
   offlineModal.style.display = 'none';
 }});
 
-// Initial draw
-setTimeout(() => drawProfile(null), 120);
+// ==========================================
+// TRIP MANAGEMENT PANELS (מפה, לוח זמנים, רשימת ציוד, בקתות)
+// ==========================================
+function switchPanel(panelName) {{
+  const mapBtn = document.getElementById('nav-btn-map');
+  const schedBtn = document.getElementById('nav-btn-schedule');
+  const gearBtn = document.getElementById('nav-btn-gear');
+  const hutsBtn = document.getElementById('nav-btn-huts');
+  if (mapBtn) mapBtn.classList.toggle('active', panelName === 'map');
+  if (schedBtn) schedBtn.classList.toggle('active', panelName === 'schedule');
+  if (gearBtn) gearBtn.classList.toggle('active', panelName === 'gear');
+  if (hutsBtn) hutsBtn.classList.toggle('active', panelName === 'huts');
+
+  const pSched = document.getElementById('panel-schedule');
+  const pGear = document.getElementById('panel-gear');
+  const pHuts = document.getElementById('panel-huts');
+  if (pSched) pSched.classList.toggle('active', panelName === 'schedule');
+  if (pGear) pGear.classList.toggle('active', panelName === 'gear');
+  if (pHuts) pHuts.classList.toggle('active', panelName === 'huts');
+
+  closeMobileSidebar();
+
+  if (panelName === 'map') {{
+    setTimeout(() => {{
+      map.invalidateSize();
+      if (profileVisible) drawProfile(activeProfileIndex);
+    }}, 50);
+  }}
+}}
+
+function jumpToStage(dayNum) {{
+  switchPanel('map');
+  const st = stages.find(s => s.day === dayNum);
+  if (!st) return;
+  const stagePts = trackPoints.filter(p => p[3] >= st.d0 && p[3] <= st.d1).map(p => [p[0], p[1]]);
+  if (stagePts.length > 0) {{
+    map.fitBounds(L.latLngBounds(stagePts), {{ padding: [45, 45], animate: true }});
+  }}
+}}
+
+function jumpToHutById(hutId) {{
+  switchPanel('map');
+  const h = huts.find(item => item.id === hutId);
+  if (!h) return;
+  const targetLat = h.overnight ? h.circle_lat : h.lat;
+  const targetLon = h.overnight ? h.circle_lon : h.lon;
+  map.flyTo([targetLat, targetLon], 16, {{ duration: 0.8 }});
+  const markerObj = hutMarkerItems.find(m => m.id === hutId);
+  if (markerObj && markerObj.marker) {{
+    markerObj.marker.openPopup();
+  }}
+}}
+
+// ==========================================
+// INTERACTIVE GEAR CHECKLIST (LOCALSTORAGE)
+// ==========================================
+const GEAR_STORAGE_KEY = 'stubai_2027_gear_v1';
+const defaultGear = {json.dumps(gear_items, ensure_ascii=False)};
+let gearState = [];
+let currentGearFilter = 'all';
+
+function loadGearState() {{
+  try {{
+    const saved = localStorage.getItem(GEAR_STORAGE_KEY);
+    if (saved) {{
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) {{
+        gearState = parsed;
+        return;
+      }}
+    }}
+  }} catch(e) {{}}
+  gearState = defaultGear.map(item => ({{ ...item, checked: false }}));
+}}
+
+function saveGearState() {{
+  try {{
+    localStorage.setItem(GEAR_STORAGE_KEY, JSON.stringify(gearState));
+  }} catch(e) {{}}
+}}
+
+function renderGearList() {{
+  const container = document.getElementById('gear-list-container');
+  const searchEl = document.getElementById('gear-search');
+  if (!container) return;
+  const query = searchEl ? searchEl.value.trim().toLowerCase() : '';
+
+  const totalCount = gearState.length;
+  const packedCount = gearState.filter(g => g.checked).length;
+  const pct = totalCount > 0 ? Math.round((packedCount / totalCount) * 100) : 0;
+
+  const countText = document.getElementById('gear-count-text');
+  const pctText = document.getElementById('gear-pct-text');
+  const progFill = document.getElementById('gear-progress-fill');
+  if (countText) countText.innerText = `${{packedCount}} / ${{totalCount}} נארזו`;
+  if (pctText) pctText.innerText = `${{pct}}%`;
+  if (progFill) progFill.style.width = `${{pct}}%`;
+
+  const filtered = gearState.filter(item => {{
+    if (currentGearFilter === 'personal' && item.cat !== 'ציוד אישי') return false;
+    if (currentGearFilter === 'team' && item.cat !== 'ציוד צוותי') return false;
+    if (currentGearFilter === 'unpacked' && item.checked) return false;
+    if (query && !item.name.toLowerCase().includes(query) && !(item.notes || '').toLowerCase().includes(query)) return false;
+    return true;
+  }});
+
+  container.innerHTML = '';
+  filtered.forEach(item => {{
+    const row = document.createElement('div');
+    row.className = 'gear-item-row' + (item.checked ? ' checked' : '');
+    const isTeam = item.cat === 'ציוד צוותי';
+    row.innerHTML = `
+      <div class="gear-checkbox">${{item.checked ? '✓' : ''}}</div>
+      <div class="gear-info">
+        <div class="gear-name">${{item.name}}</div>
+        ${{item.notes ? `<div class="gear-notes">${{item.notes}}</div>` : ''}}
+      </div>
+      <div class="gear-meta">
+        ${{item.qty ? `<span class="gear-qty-badge">כמות: ${{item.qty}}</span>` : ''}}
+        <span class="gear-cat-badge ${{isTeam ? 'team' : ''}}">${{item.cat}}</span>
+      </div>
+    `;
+    row.addEventListener('click', () => {{
+      item.checked = !item.checked;
+      saveGearState();
+      renderGearList();
+    }});
+    container.appendChild(row);
+  }});
+}}
+
+function setGearFilter(filterType, btnEl) {{
+  currentGearFilter = filterType;
+  document.querySelectorAll('.gear-filter-btn').forEach(b => b.classList.remove('active'));
+  if (btnEl) btnEl.classList.add('active');
+  renderGearList();
+}}
+
+function resetGearChecklist() {{
+  if (typeof confirm !== 'undefined' && !confirm('לאפס את כל סימוני הציוד?')) return;
+  gearState = defaultGear.map(item => ({{ ...item, checked: false }}));
+  saveGearState();
+  renderGearList();
+}}
+
+function addCustomGearItem() {{
+  const nameInput = document.getElementById('new-gear-name');
+  const qtyInput = document.getElementById('new-gear-qty');
+  const catInput = document.getElementById('new-gear-cat');
+  const notesInput = document.getElementById('new-gear-notes');
+  if (!nameInput || !nameInput.value.trim()) return;
+  const newItem = {{
+    id: Date.now(),
+    cat: catInput ? catInput.value : 'ציוד אישי',
+    name: nameInput.value.trim(),
+    qty: qtyInput && qtyInput.value.trim() ? qtyInput.value.trim() : '1',
+    notes: notesInput ? notesInput.value.trim() : '',
+    checked: false
+  }};
+  gearState.push(newItem);
+  saveGearState();
+  nameInput.value = '';
+  if (qtyInput) qtyInput.value = '';
+  if (notesInput) notesInput.value = '';
+  renderGearList();
+}}
+
+loadGearState();
+renderGearList();
+
+// Initial draw + ResizeObserver so elevation profile is guaranteed to render on PC & mobile
+setTimeout(() => drawProfile(null), 60);
+setTimeout(() => drawProfile(null), 250);
+window.addEventListener('load', () => drawProfile(activeProfileIndex));
+if (typeof ResizeObserver !== 'undefined' && profileCanvas) {{
+  const ro = new ResizeObserver(() => {{
+    if (profileVisible) drawProfile(activeProfileIndex);
+  }});
+  ro.observe(profileCanvas);
+}}
 </script>
 </body>
 </html>"""

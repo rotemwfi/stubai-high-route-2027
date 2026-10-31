@@ -1,0 +1,48 @@
+{
+  "scale_denominator": 50000,
+  "buffer_km": 20.0,
+  "dem_source": {
+    "provider": "AWS Open Data Terrain Tiles (Mapzen Terrarium)",
+    "url_template": "https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png",
+    "zoom_level": 12,
+    "smoothing_sigma": 1.5
+  },
+  "contours": {
+    "regular_interval_m": 50,
+    "index_interval_m": 250,
+    "regular_color": "#b4693c",
+    "index_color": "#8c461e",
+    "regular_linewidth": 0.42,
+    "index_linewidth": 0.9,
+    "label_fontsize": 6.5
+  },
+  "roads_source": {
+    "overpass_endpoints": [
+      "https://overpass-api.de/api/interpreter",
+      "https://lz4.overpass-api.de/api/interpreter",
+      "https://overpass.kumi.systems/api/interpreter"
+    ],
+    "styles": {
+      "motorway_trunk": {"color": "#1e293b", "linewidth": 1.6, "linestyle": "solid", "label": "Highway / Main Road"},
+      "primary_secondary": {"color": "#334155", "linewidth": 1.15, "linestyle": "solid", "label": "Regional Road"},
+      "tertiary_minor": {"color": "#475569", "linewidth": 0.75, "linestyle": "solid", "label": "Local / Valley Road"},
+      "track_service": {"color": "#64748b", "linewidth": 0.5, "linestyle": "dashed", "label": "Mountain Track / Unpaved Road"}
+    }
+  },
+  "utm_grid": {
+    "minor_step_m": 1000,
+    "major_step_m": 5000,
+    "minor_color": "#0284c7",
+    "major_color": "#0369a1",
+    "minor_linewidth": 0.35,
+    "major_linewidth": 0.8,
+    "minor_alpha": 0.55,
+    "major_alpha": 0.85
+  },
+  "gpx_route_style": {
+    "color": "#dc2626",
+    "casing_color": "#ffffff",
+    "linewidth": 2.2,
+    "casing_linewidth": 3.6
+  }
+}

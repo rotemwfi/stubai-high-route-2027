@@ -1,0 +1,24 @@
+# Personal flight / booking documents
+XOA6ZB.pdf
+*ticket*.pdf
+*booking*.pdf
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Intermediate tile caches, previews, and duplicate large maps
+state/tiles/
+state/maps/
+state/test_*.png
+*.tmp
+
+# Temporary test scripts
+test_*.js
+test_*.html
+
+# Windows shortcuts / OS files
+*.url
+Thumbs.db
+.DS_Store

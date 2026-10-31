@@ -1,0 +1,25 @@
+{
+  "project_name": "Nemerim - Austria 2027 (Stubai High Trail)",
+  "group_profile": {
+    "name": "Nemerim",
+    "size_min": 10,
+    "size_max": 15,
+    "average_age": 50,
+    "background": "Army friends; completed Dolomites Alta Via 1 (Lago di Braies to Cortina) in 5 days in 2025",
+    "baseline_fitness": "Good mountain fitness; comfortable with 5-7 hrs/day, 8-14 km, 700-1000m elevation changes; open to Via Ferrata and peak summits"
+  },
+  "logistics": {
+    "flight_booking_code": "XOA6ZB",
+    "outbound_flight": "EL AL LY353 | TLV -> MUC | Sun 05 SEP 2027 | 06:00 - 09:05",
+    "return_flight": "EL AL LY354 | MUC -> TLV | Sun 12 SEP 2027 | 10:20 - 15:05",
+    "base_city": "Innsbruck, Austria",
+    "trek_dates": {
+      "start_date": "2027-09-06",
+      "end_date": "2027-09-10",
+      "hiking_days": 5,
+      "hut_nights": 4
+    },
+    "valley_transit_preference": "Public transit (Bus 590 / Tram STB from Innsbruck Hbf) or group shuttle + cable cars / hut taxis on Day 1 and Day 5 to avoid long valley forest climbs",
+    "payments_sheet_url": "https://docs.google.com/spreadsheets/d/16klwzVB64Q9VOoJ4esmbPNedPQCwmtdWxIaQVijLRio/edit?gid=1662616442#gid=1662616442"
+  }
+}

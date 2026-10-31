@@ -1,0 +1,71 @@
+{
+  "current_phase": "Phase 2 - Selected Route 1 (Calibrated Alta Via 1 Match) Finalized for Topo Map",
+  "selected_alternative": "Alternative 1 - Calibrated Alta Via 1 Match (47.5 km | +2,820 m | 4 Luxury Huts + WildeWasser Exit)",
+  "trek_window": {
+    "day_1": "2027-09-06",
+    "day_2": "2027-09-07",
+    "day_3": "2027-09-08",
+    "day_4": "2027-09-09",
+    "day_5": "2027-09-10"
+  },
+  "alternatives_summary": {
+    "alternative_1": {
+      "title": "The Glacier, Waterfall & Peak Hub Route (3 High-Comfort Huts + 2-Night Hub Stay)",
+      "difficulty": "Moderate-Alpine (T3 + Optional Via Ferrata C/D)",
+      "huts": [
+        "Night 1 (06 Sep): Neue Regensburger Hütte (2,286m) [5/5 Comfort]",
+        "Night 2 (07 Sep): Dresdner Hütte (2,308m) [5/5 Comfort - Hub Night 1]",
+        "Night 3 (08 Sep): Dresdner Hütte (2,308m) [5/5 Comfort - Hub Night 2]",
+        "Night 4 (09 Sep): Sulzenauhütte (2,191m) [4.5/5 Comfort]"
+      ],
+      "total_distance_km": 50.5,
+      "total_ascent_m": 3800,
+      "total_descent_m": 4290,
+      "gpx_file": "state/gpx/stubai_alt1_glacier_hub.gpx",
+      "track_points_3d": 4159
+    },
+    "alternative_2": {
+      "title": "The Classic High-Alpine Traverse (4 Huts Point-to-Point + Queen Stage + Habicht 3,277m)",
+      "difficulty": "Challenging High-Alpine (T3+/T4 + Cables + Peak/Ferrata)",
+      "huts": [
+        "Night 1 (06 Sep): Sulzenauhütte (2,191m) [4.5/5 Comfort]",
+        "Night 2 (07 Sep): Nürnberger Hütte (2,297m) [4/5 Comfort]",
+        "Night 3 (08 Sep): Bremer Hütte (2,411m) [3/5 Rustic Comfort]",
+        "Night 4 (09 Sep): Innsbrucker Hütte (2,369m) [4.5/5 Comfort]"
+      ],
+      "total_distance_km": 41.7,
+      "total_ascent_m": 3900,
+      "total_descent_m": 4460,
+      "gpx_file": "state/gpx/stubai_alt2_classic_traverse.gpx",
+      "track_points_3d": 3961
+    },
+    "alternative_3A": {
+      "title": "The 56.5 km High-Comfort Western-to-Central Traverse (6 Huts Visited • All 4.5★–5★ Overnight Huts)",
+      "difficulty": "Endurance Alpine (T3/T3+ across 56.5 km; All High-Comfort Huts)",
+      "huts": [
+        "Night 1 (06 Sep): Franz-Senn-Hütte (2,147m) [4.5/5 Comfort]",
+        "Night 2 (07 Sep): Neue Regensburger Hütte (2,286m) [5/5 Comfort]",
+        "Night 3 (08 Sep): Dresdner Hütte (2,308m) [5/5 Comfort]",
+        "Night 4 (09 Sep): Sulzenauhütte (2,191m) [4.5/5 Comfort]"
+      ],
+      "total_distance_km": 56.5,
+      "total_ascent_m": 3760,
+      "total_descent_m": 4650
+    }
+  },
+  "topo_exports": {
+    "selected_route_gpx": "state/gpx/stubai_selected_route_2027.gpx",
+    "selected_route_topomap_html": "state/stubai_selected_route_topomap.html",
+    "track_points_3d": 4788,
+    "waypoints_count": 18,
+    "utm_1_50000_maps": {
+      "input_gpx": "export.gpx",
+      "route_title": "Stubital high Route 2027 Days 1-5",
+      "utm_zone": "32N (EPSG:32632)",
+      "vector_pdf": "state/maps/export_50m_shaded_water_1_50000_utm_map.pdf",
+      "raster_png": "state/maps/export_50m_shaded_water_1_50000_utm_map.png",
+      "interactive_viewer_html": "state/maps/export_50m_shaded_water_1_50000_utm_viewer.html",
+      "manifest_json": "state/maps/export_50m_shaded_water_map_manifest.json"
+    }
+  }
+}

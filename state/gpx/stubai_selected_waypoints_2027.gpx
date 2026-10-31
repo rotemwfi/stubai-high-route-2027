@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="Mapy.com" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+  <metadata>
+    <name>Stubai High Trail 2027 - 18 Huts and Waypoints</name>
+  </metadata>
+  <wpt lat="47.095800" lon="11.219200">
+    <ele>1742.0</ele>
+    <name>01. Oberissalm (Stöcklenalm) (1742m)</name>
+    <desc>Day 1 (Trailhead &amp; Material Lift): End of Oberbergtal road; luggage cableway to Franz-Senn-Hütte</desc>
+  </wpt>
+  <wpt lat="47.091400" lon="11.205600">
+    <ele>2040.0</ele>
+    <name>02. Alpeineralm (2040m)</name>
+    <desc>Day 1 (Alpine Meadow): Gentle valley trail alongside Alpeiner Bach</desc>
+  </wpt>
+  <wpt lat="47.087900" lon="11.195100">
+    <ele>2147.0</ele>
+    <name>03. Franz-Senn-Hütte (2147m)</name>
+    <desc>Day 1 (Hut Night 1 (4.5*)): Drop heavy packs; check into 4.5* DAV rooms (hot showers, Wi-Fi)</desc>
+  </wpt>
+  <wpt lat="47.081900" lon="11.176500">
+    <ele>2350.0</ele>
+    <name>04. Kuhgschwetz / Alpeiner Glacier View (2350m)</name>
+    <desc>Day 1 (Afternoon Loop Turnaround): Scenic afternoon glacier stream walk (+200m out-and-back to 8.5 km)</desc>
+  </wpt>
+  <wpt lat="47.075500" lon="11.198800">
+    <ele>2420.0</ele>
+    <name>05. Platzengrube (2420m)</name>
+    <desc>Day 2 (High Alpine Basin): Stubaier Höhenweg high balcony trail</desc>
+  </wpt>
+  <wpt lat="47.065800" lon="11.202800">
+    <ele>2714.0</ele>
+    <name>06. Schrimmennieder Pass (2714m)</name>
+    <desc>Day 2 (Day 2 Max Pass): Main ridge pass (2,714m) between Oberbergtal &amp; Falbeson</desc>
+  </wpt>
+  <wpt lat="47.049400" lon="11.203900">
+    <ele>2286.0</ele>
+    <name>07. Neue Regensburger Hütte (2286m)</name>
+    <desc>Day 2 (Hut Night 2 (5.0*)): Rebuilt modern 5.0* timber wing right beside waterfall</desc>
+  </wpt>
+  <wpt lat="47.036500" lon="11.189500">
+    <ele>2450.0</ele>
+    <name>08. Hohes Moos (2450m)</name>
+    <desc>Day 3 (Glacial Fen &amp; Lake Plateau): Marshy high plateau below Ruderhofspitze</desc>
+  </wpt>
+  <wpt lat="47.018900" lon="11.168300">
+    <ele>2880.0</ele>
+    <name>09. Grawagrubennieder Pass (2880m)</name>
+    <desc>Day 3 (Day 3 Max Pass (Trail High Point)): Highest main-trail pass on the Stubai High Trail (2,880m)</desc>
+  </wpt>
+  <wpt lat="47.010200" lon="11.153800">
+    <ele>2483.0</ele>
+    <name>10. Mutterberger See (2483m)</name>
+    <desc>Day 3 (High Alpine Tarn): Crystal-clear glacial lake above Dresdner Hütte</desc>
+  </wpt>
+  <wpt lat="46.996700" lon="11.148100">
+    <ele>2308.0</ele>
+    <name>11. Dresdner Hütte (2308m)</name>
+    <desc>Day 3 (Hut Night 3 (5.0*)): Hotel-grade 5.0* comfort, sauna, next to Fernau mid-station</desc>
+  </wpt>
+  <wpt lat="46.996100" lon="11.168900">
+    <ele>2676.0</ele>
+    <name>12. Peiljoch Pass (2676m)</name>
+    <desc>Day 4 (Day 4 Max Pass): Steel-cable secured pass (2,676m) between Dresdner &amp; Sulzenau</desc>
+  </wpt>
+  <wpt lat="46.993600" lon="11.182500">
+    <ele>2290.0</ele>
+    <name>13. Blaue Lacke (2290m)</name>
+    <desc>Day 4 (Turquoise Glacial Lake): Iconic turquoise tarn below Sulzenauferner</desc>
+  </wpt>
+  <wpt lat="46.999700" lon="11.186900">
+    <ele>2191.0</ele>
+    <name>14. Sulzenauhütte (2191m)</name>
+    <desc>Day 4 (Hut Night 4 (4.5*)): Dramatic glacial amphitheater &amp; waterfall (4.5* comfort)</desc>
+  </wpt>
+  <wpt lat="47.012400" lon="11.189100">
+    <ele>1857.0</ele>
+    <name>15. Sulzenaualm (1857m)</name>
+    <desc>Day 5 (Alpine Pasture &amp; Waterfall): Start of lower WildeWasserWeg gorge</desc>
+  </wpt>
+  <wpt lat="47.029400" lon="11.198300">
+    <ele>1530.0</ele>
+    <name>16. Grawa Alm &amp; Grawa Waterfall (1530m)</name>
+    <desc>Day 5 (Famous Waterfall Platforms): Widest waterfall in the Eastern Alps (viewing decks + optional early Bus 590)</desc>
+  </wpt>
+  <wpt lat="47.043500" lon="11.229500">
+    <ele>1380.0</ele>
+    <name>17. Ruetz Katarakt / Tschangelair Alm (1380m)</name>
+    <desc>Day 5 (River Gorge Trail): Scenic WildeWasserWeg along the roaring Ruetz river</desc>
+  </wpt>
+  <wpt lat="47.058300" lon="11.253600">
+    <ele>1220.0</ele>
+    <name>18. Falbeson / Ranalt (Bus 590) (1220m)</name>
+    <desc>Day 5 (Final Trailhead &amp; Bus Stop): End of trek; direct Bus 590 back to Innsbruck Hbf</desc>
+  </wpt>
+  <wpt lat="47.001900" lon="11.155800">
+    <ele>2631.0</ele>
+    <name>[OPT] Fernau Klettersteig / Egesengrat Summit</name>
+    <desc>Optional Day 3 afternoon Via Ferrata (C/D) or panoramic ridge walk (+320m, 2.5 hrs RT from Dresdner Hütte)</desc>
+  </wpt>
+  <wpt lat="47.001400" lon="11.170600">
+    <ele>2902.0</ele>
+    <name>[OPT] Großer Trögler Summit (2,902m)</name>
+    <desc>Optional Day 4 summit cross ridge (+226m above Peiljoch pass, descending to Blaue Lacke)</desc>
+  </wpt>
+</gpx>

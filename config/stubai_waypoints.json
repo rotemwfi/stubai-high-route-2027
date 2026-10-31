@@ -1,0 +1,118 @@
+{
+  "metadata": {
+    "region": "Stubai Alps, Tyrol, Austria",
+    "trail": "Stubaier Höhenweg (Stubai High Trail) — Selected Winner Route (Alt 1: Calibrated Alta Via 1 Match)",
+    "crs": "EPSG:4326 (WGS84)",
+    "dates": "2027-09-06 to 2027-09-10"
+  },
+  "selected_route_waypoints": [
+    {"seq": 1, "id": "oberissalm", "day": 1, "name": "Oberissalm (Stöcklenalm)", "role": "Trailhead & Material Lift", "type": "valley_access", "lat": 47.0958, "lon": 11.2192, "ele": 1742, "cum_km": 0.0, "desc": "End of Oberbergtal road; luggage cableway to Franz-Senn-Hütte"},
+    {"seq": 2, "id": "alpeineralm", "day": 1, "name": "Alpeineralm", "role": "Alpine Meadow", "type": "meadow", "lat": 47.0914, "lon": 11.2056, "ele": 2040, "cum_km": 2.8, "desc": "Gentle valley trail alongside Alpeiner Bach"},
+    {"seq": 3, "id": "franz_senn_huette", "day": 1, "name": "Franz-Senn-Hütte", "role": "Hut Night 1 (4.5★)", "type": "hut", "lat": 47.0879, "lon": 11.1951, "ele": 2147, "cum_km": 4.5, "desc": "Drop heavy packs; check into 4.5★ DAV rooms (hot showers, Wi-Fi)"},
+    {"seq": 4, "id": "kuhgschwetz", "day": 1, "name": "Kuhgschwetz / Alpeiner Glacier View", "role": "Afternoon Loop Turnaround", "type": "viewpoint", "lat": 47.0819, "lon": 11.1765, "ele": 2350, "cum_km": 6.5, "desc": "Scenic afternoon glacier stream walk (+200m out-and-back to 8.5 km)"},
+    {"seq": 5, "id": "platzengrube", "day": 2, "name": "Platzengrube", "role": "High Alpine Basin", "type": "basin", "lat": 47.0755, "lon": 11.1988, "ele": 2420, "cum_km": 11.5, "desc": "Stubaier Höhenweg high balcony trail"},
+    {"seq": 6, "id": "schrimmennieder", "day": 2, "name": "Schrimmennieder Pass", "role": "Day 2 Max Pass", "type": "pass", "lat": 47.0658, "lon": 11.2028, "ele": 2714, "cum_km": 13.5, "desc": "Main ridge pass (2,714m) between Oberbergtal & Falbeson"},
+    {"seq": 7, "id": "neue_regensburger_huette", "day": 2, "name": "Neue Regensburger Hütte", "role": "Hut Night 2 (5.0★)", "type": "hut", "lat": 47.0494, "lon": 11.2039, "ele": 2286, "cum_km": 18.0, "desc": "Rebuilt modern 5.0★ timber wing right beside waterfall"},
+    {"seq": 8, "id": "hohes_moos", "day": 3, "name": "Hohes Moos", "role": "Glacial Fen & Lake Plateau", "type": "basin", "lat": 47.0365, "lon": 11.1895, "ele": 2450, "cum_km": 21.5, "desc": "Marshy high plateau below Ruderhofspitze"},
+    {"seq": 9, "id": "grawagrubennieder", "day": 3, "name": "Grawagrubennieder Pass", "role": "Day 3 Max Pass (Trail High Point)", "type": "pass", "lat": 47.0189, "lon": 11.1683, "ele": 2880, "cum_km": 25.0, "desc": "Highest main-trail pass on the Stubai High Trail (2,880m)"},
+    {"seq": 10, "id": "mutterberger_see", "day": 3, "name": "Mutterberger See", "role": "High Alpine Tarn", "type": "lake", "lat": 47.0102, "lon": 11.1538, "ele": 2483, "cum_km": 27.2, "desc": "Crystal-clear glacial lake above Dresdner Hütte"},
+    {"seq": 11, "id": "dresdner_huette", "day": 3, "name": "Dresdner Hütte", "role": "Hut Night 3 (5.0★)", "type": "hut", "lat": 46.9967, "lon": 11.1481, "ele": 2308, "cum_km": 29.5, "desc": "Hotel-grade 5.0★ comfort, sauna, next to Fernau mid-station"},
+    {"seq": 12, "id": "peiljoch", "day": 4, "name": "Peiljoch Pass", "role": "Day 4 Max Pass", "type": "pass", "lat": 46.9961, "lon": 11.1689, "ele": 2676, "cum_km": 32.0, "desc": "Steel-cable secured pass (2,676m) between Dresdner & Sulzenau"},
+    {"seq": 13, "id": "blaue_lacke", "day": 4, "name": "Blaue Lacke", "role": "Turquoise Glacial Lake", "type": "lake", "lat": 46.9936, "lon": 11.1825, "ele": 2290, "cum_km": 34.5, "desc": "Iconic turquoise tarn below Sulzenauferner"},
+    {"seq": 14, "id": "sulzenauhuette", "day": 4, "name": "Sulzenauhütte", "role": "Hut Night 4 (4.5★)", "type": "hut", "lat": 46.9997, "lon": 11.1869, "ele": 2191, "cum_km": 37.0, "desc": "Dramatic glacial amphitheater & waterfall (4.5★ comfort)"},
+    {"seq": 15, "id": "sulzenaualm", "day": 5, "name": "Sulzenaualm", "role": "Alpine Pasture & Waterfall", "type": "meadow", "lat": 47.0124, "lon": 11.1891, "ele": 1857, "cum_km": 39.5, "desc": "Start of lower WildeWasserWeg gorge"},
+    {"seq": 16, "id": "grawa_alm", "day": 5, "name": "Grawa Alm & Grawa Waterfall", "role": "Famous Waterfall Platforms", "type": "valley_access", "lat": 47.0294, "lon": 11.1983, "ele": 1530, "cum_km": 42.5, "desc": "Widest waterfall in the Eastern Alps (viewing decks + optional early Bus 590)"},
+    {"seq": 17, "id": "ruetz_katarakt", "day": 5, "name": "Ruetz Katarakt / Tschangelair Alm", "role": "River Gorge Trail", "type": "gorge", "lat": 47.0435, "lon": 11.2295, "ele": 1380, "cum_km": 45.2, "desc": "Scenic WildeWasserWeg along the roaring Ruetz river"},
+    {"seq": 18, "id": "falbeson", "day": 5, "name": "Falbeson / Ranalt (Bus 590)", "role": "Final Trailhead & Bus Stop", "type": "valley_access", "lat": 47.0583, "lon": 11.2536, "ele": 1220, "cum_km": 47.5, "desc": "End of trek; direct Bus 590 back to Innsbruck Hbf"}
+  ],
+  "optional_variants": [
+    {
+      "id": "variant_a_fernau_ferrata",
+      "name": "Optional Day 3 Afternoon: Fernau Klettersteig (C/D) / Egesengrat (2,631m)",
+      "day": 3,
+      "color": "#f59e0b",
+      "waypoint": {"id": "egesengrat_fernau", "name": "Fernau Klettersteig / Egesengrat Summit", "type": "ferrata", "lat": 47.0019, "lon": 11.1558, "ele": 2631, "desc": "Optional Day 3 afternoon Via Ferrata (C/D) or panoramic ridge walk (+320m, 2.5 hrs RT from Dresdner Hütte)"},
+      "sequence": ["dresdner_huette", "egesengrat_fernau", "dresdner_huette"]
+    },
+    {
+      "id": "variant_b_grosser_troegler",
+      "name": "Optional Day 4 Peak Variant: Großer Trögler Summit (2,902m)",
+      "day": 4,
+      "color": "#a855f7",
+      "waypoint": {"id": "grosser_troegler", "name": "Großer Trögler Summit (2,902m)", "type": "peak", "lat": 47.0014, "lon": 11.1706, "ele": 2902, "desc": "Optional Day 4 summit cross ridge (+226m above Peiljoch pass, descending to Blaue Lacke)"},
+      "sequence": ["peiljoch", "grosser_troegler", "blaue_lacke"]
+    }
+  ],
+  "days": [
+    {
+      "day": 1,
+      "date": "Mon, 06 Sep 2027",
+      "title": "Day 1: Oberissalm → Franz-Senn-Hütte + Alpeiner Glacier Walk",
+      "distance_km": 8.5,
+      "ascent_m": 610,
+      "descent_m": 210,
+      "max_ele_m": 2350,
+      "hours": "3.5 hrs",
+      "grade": "T2",
+      "hut": "Franz-Senn-Hütte (2,147m, 4.5★)",
+      "color": "#3b82f6",
+      "sequence": ["oberissalm", "alpeineralm", "franz_senn_huette", "kuhgschwetz", "franz_senn_huette"]
+    },
+    {
+      "day": 2,
+      "date": "Tue, 07 Sep 2027",
+      "title": "Day 2: Franz-Senn-Hütte → Schrimmennieder (2,714m) → Neue Regensburger Hütte",
+      "distance_km": 9.5,
+      "ascent_m": 760,
+      "descent_m": 620,
+      "max_ele_m": 2714,
+      "hours": "4.0–4.5 hrs",
+      "grade": "T3",
+      "hut": "Neue Regensburger Hütte (2,286m, 5.0★)",
+      "color": "#10b981",
+      "sequence": ["franz_senn_huette", "platzengrube", "schrimmennieder", "neue_regensburger_huette"]
+    },
+    {
+      "day": 3,
+      "date": "Wed, 08 Sep 2027",
+      "title": "Day 3: Neue Regensburger Hütte → Grawagrubennieder (2,880m) → Dresdner Hütte",
+      "distance_km": 11.5,
+      "ascent_m": 880,
+      "descent_m": 860,
+      "max_ele_m": 2880,
+      "hours": "5.0–5.5 hrs",
+      "grade": "T3+",
+      "hut": "Dresdner Hütte (2,308m, 5.0★)",
+      "color": "#ef4444",
+      "sequence": ["neue_regensburger_huette", "hohes_moos", "grawagrubennieder", "mutterberger_see", "dresdner_huette"]
+    },
+    {
+      "day": 4,
+      "date": "Thu, 09 Sep 2027",
+      "title": "Day 4: Dresdner Hütte → Peiljoch (2,676m) → Blaue Lacke → Sulzenauhütte",
+      "distance_km": 7.5,
+      "ascent_m": 450,
+      "descent_m": 570,
+      "max_ele_m": 2676,
+      "hours": "3.5–4.0 hrs",
+      "grade": "T3",
+      "hut": "Sulzenauhütte (2,191m, 4.5★)",
+      "color": "#8b5cf6",
+      "sequence": ["dresdner_huette", "peiljoch", "blaue_lacke", "sulzenauhuette"]
+    },
+    {
+      "day": 5,
+      "date": "Fri, 10 Sep 2027",
+      "title": "Day 5: Sulzenauhütte → Grawa Waterfall → WildeWasserWeg → Falbeson",
+      "distance_km": 10.5,
+      "ascent_m": 120,
+      "descent_m": 1090,
+      "max_ele_m": 2191,
+      "hours": "3.5–4.0 hrs",
+      "grade": "T2",
+      "hut": "Return to Innsbruck Hbf (Bus 590)",
+      "color": "#06b6d4",
+      "sequence": ["sulzenauhuette", "sulzenaualm", "grawa_alm", "ruetz_katarakt", "falbeson"]
+    }
+  ]
+}

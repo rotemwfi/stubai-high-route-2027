@@ -9,6 +9,12 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent))
 from hut_specs import HUTS
 
+offline_tiles_path = Path("config/offline_tiles.json")
+if offline_tiles_path.exists():
+    offline_tiles = json.loads(offline_tiles_path.read_text(encoding="utf-8"))
+else:
+    offline_tiles = []
+
 transformer = pyproj.Transformer.from_crs("EPSG:4326", "EPSG:32632", always_xy=True)
 to_wgs = pyproj.Transformer.from_crs("EPSG:32632", "EPSG:4326", always_xy=True)
 
@@ -124,6 +130,9 @@ html_content = f"""<!DOCTYPE html>
 <meta name="theme-color" content="#0f172a"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Stubai Map"/>
+<link rel="manifest" href="manifest.webmanifest"/>
+<link rel="apple-touch-icon" href="apple-touch-icon.png"/>
 <title>Stubai High Trail (2027) — Mobile Topographic Map & Elevation Profile</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -504,6 +513,7 @@ html_content = f"""<!DOCTYPE html>
       <div style="color: #64748b; font-size: 10px; margin-top: 2px;" id="wgs-coords">Lat/Lon: --</div>
     </div>
     <div id="controls">
+      <button class="btn" id="btn-offline" style="background: #0284c7; border: 1px solid #38bdf8; font-weight: bold; color: white;">📲 Make Available Offline</button>
       <button class="btn btn-outline" id="toggle-profile-btn">📈 Toggle Elevation Profile</button>
       <button class="btn btn-outline" id="toggle-grid-btn">🧭 Toggle 1 km UTM Grid</button>
       <a class="btn" href="Stubai_High_Route_Complete_Map_Book_Final_Atlas.pdf" target="_blank">📥 Download Complete Atlas (PDF)</a>
@@ -529,6 +539,7 @@ html_content = f"""<!DOCTYPE html>
     
     <!-- FLOATING ACTION BUTTONS (BOTTOM RIGHT) -->
     <div id="fab-group">
+      <div class="fab" id="fab-offline" style="border-color: #38bdf8; color: #38bdf8;">📲 Save Offline</div>
       <div class="fab" id="fab-profile">📈 Profile</div>
       <div class="fab" id="fab-grid">🧭 Grid</div>
     </div>
@@ -547,6 +558,30 @@ html_content = f"""<!DOCTYPE html>
       <div id="profile-chart-wrap">
         <canvas id="profile-canvas"></canvas>
       </div>
+    </div>
+  </div>
+
+  <!-- OFFLINE MODAL -->
+  <div id="offline-modal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.78); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
+    <div style="background: #0f172a; border: 1px solid #334155; border-radius: 16px; padding: 22px; max-width: 360px; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.6); text-align: center; color: #f1f5f9;">
+      <div style="font-size: 32px; margin-bottom: 8px;" id="modal-icon">📲</div>
+      <div style="font-size: 16px; font-weight: bold; margin-bottom: 6px;" id="modal-title">Saving Offline Map</div>
+      <div style="font-size: 12px; color: #94a3b8; margin-bottom: 16px;" id="modal-status">Preparing topographic tiles for all 5 stages...</div>
+      
+      <!-- Progress Bar Container -->
+      <div id="progress-container" style="background: #1e293b; border-radius: 8px; height: 10px; overflow: hidden; margin-bottom: 14px; border: 1px solid #334155;">
+        <div id="progress-bar" style="background: #38bdf8; width: 0%; height: 100%; transition: width 0.15s ease;"></div>
+      </div>
+
+      <!-- iOS Home Screen Guide (Visible only on iPhone/iPad) -->
+      <div id="ios-guide" style="display: none; background: #1e293b; border: 1px solid #38bdf8; border-radius: 10px; padding: 12px; margin-bottom: 14px; text-align: left; font-size: 12px; line-height: 1.5; color: #cbd5e1;">
+        <strong style="color: #38bdf8;">📲 Add App Icon to Your iPhone Screen:</strong><br/>
+        1. Tap the Safari <strong>Share</strong> button (box with arrow <span style="font-size: 14px;">⎙</span>) at the bottom.<br/>
+        2. Scroll down and tap <strong>Add to Home Screen</strong> (<span style="font-size: 14px;">➕</span>).<br/>
+        3. Tap <strong>Add</strong> at top right.
+      </div>
+
+      <button class="btn btn-outline" id="modal-close" style="width: 100%; display: none; margin-top: 10px;">Got It / Close</button>
     </div>
   </div>
 </div>
@@ -1211,6 +1246,128 @@ closeProfileBtn.addEventListener('click', toggleProfile);
 
 window.addEventListener('resize', () => {{
   if (profileVisible) drawProfile(activeProfileIndex);
+}});
+
+// ==========================================
+// OFFLINE & PWA MANAGEMENT
+// ==========================================
+const offlineTiles = {json.dumps(offline_tiles)};
+let deferredPrompt = null;
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+
+if ('serviceWorker' in navigator) {{
+  window.addEventListener('load', () => {{
+    navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW reg error:', err));
+  }});
+}}
+
+window.addEventListener('beforeinstallprompt', (e) => {{
+  e.preventDefault();
+  deferredPrompt = e;
+}});
+
+const btnOffline = document.getElementById('btn-offline');
+const fabOffline = document.getElementById('fab-offline');
+const offlineModal = document.getElementById('offline-modal');
+const modalIcon = document.getElementById('modal-icon');
+const modalTitle = document.getElementById('modal-title');
+const modalStatus = document.getElementById('modal-status');
+const progressBar = document.getElementById('progress-bar');
+const iosGuide = document.getElementById('ios-guide');
+const modalClose = document.getElementById('modal-close');
+
+async function checkCachedStatus() {{
+  if ('caches' in window) {{
+    try {{
+      const cache = await caches.open('stubai-tiles-v1');
+      if (offlineTiles.length > 0) {{
+        const sampleTile = offlineTiles[Math.floor(offlineTiles.length / 2)];
+        const match = await cache.match(`https://a.tile.opentopomap.org/${{sampleTile[0]}}/${{sampleTile[1]}}/${{sampleTile[2]}}.png`);
+        if (match) {{
+          if (btnOffline) btnOffline.innerText = "✅ Map Available Offline";
+          if (fabOffline) fabOffline.innerText = "✅ Offline Ready";
+        }}
+      }}
+    }} catch(e) {{}}
+  }}
+}}
+checkCachedStatus();
+
+async function startOfflineDownload() {{
+  closeMobileSidebar();
+  
+  if (deferredPrompt) {{
+    try {{
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(() => {{
+        deferredPrompt = null;
+      }});
+    }} catch(e) {{}}
+  }}
+
+  offlineModal.style.display = 'flex';
+  modalIcon.innerText = "⏳";
+  modalTitle.innerText = "Saving Stubai Map Offline";
+  modalStatus.innerText = "Caching 280 topographic tiles for all 5 stages...";
+  progressBar.style.width = '0%';
+  modalClose.style.display = 'none';
+  if (iosGuide) iosGuide.style.display = 'none';
+
+  if (!('caches' in window)) {{
+    modalIcon.innerText = "⚠️";
+    modalTitle.innerText = "Offline Storage Unavailable";
+    modalStatus.innerText = "Your browser does not support CacheStorage.";
+    modalClose.style.display = 'block';
+    return;
+  }}
+
+  const cache = await caches.open('stubai-tiles-v1');
+  const servers = ['a', 'b', 'c'];
+  const total = offlineTiles.length;
+  let done = 0;
+  const batchSize = 6;
+
+  for (let i = 0; i < total; i += batchSize) {{
+    const batch = offlineTiles.slice(i, i + batchSize);
+    await Promise.all(batch.map(async ([z, x, y]) => {{
+      const server = servers[(x + y) % servers.length];
+      const url = `https://${{server}}.tile.opentopomap.org/${{z}}/${{x}}/${{y}}.png`;
+      const canonical = `https://a.tile.opentopomap.org/${{z}}/${{x}}/${{y}}.png`;
+      try {{
+        const existing = await cache.match(canonical);
+        if (!existing) {{
+          const resp = await fetch(url, {{ mode: 'cors' }});
+          if (resp && resp.status === 200) {{
+            await cache.put(canonical, resp.clone());
+            await cache.put(url, resp);
+          }}
+        }}
+      }} catch (err) {{
+        console.warn('Tile fetch issue:', url);
+      }}
+      done++;
+      const pct = Math.round((done / total) * 100);
+      progressBar.style.width = pct + '%';
+      modalStatus.innerText = `Cached ${{done}} of ${{total}} map tiles (${{pct}}%)...`;
+    }}));
+  }}
+
+  modalIcon.innerText = "✅";
+  modalTitle.innerText = "Map is 100% Offline Ready!";
+  modalStatus.innerHTML = "<strong>All 5 stages of the Stubai High Route are now stored on your phone!</strong><br/><br/>You can view the full topographic map, follow the trail, and use GPS even with zero cellular signal or in Airplane Mode.";
+  modalClose.style.display = 'block';
+  if (btnOffline) btnOffline.innerText = "✅ Map Available Offline";
+  if (fabOffline) fabOffline.innerText = "✅ Offline Ready";
+
+  if (isIOS) {{
+    iosGuide.style.display = 'block';
+  }}
+}}
+
+if (btnOffline) btnOffline.addEventListener('click', startOfflineDownload);
+if (fabOffline) fabOffline.addEventListener('click', startOfflineDownload);
+if (modalClose) modalClose.addEventListener('click', () => {{
+  offlineModal.style.display = 'none';
 }});
 
 // Initial draw

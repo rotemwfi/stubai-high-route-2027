@@ -273,6 +273,27 @@ html_content = f"""<!DOCTYPE html>
     max-width: 55%;
   }}
   
+  /* Ensure Leaflet zoom controls never overlap top floating bar or GPS button */
+  .leaflet-top.leaflet-right {{
+    top: 60px !important;
+    right: 12px !important;
+  }}
+  .leaflet-bar {{
+    border: 1px solid #334155 !important;
+    border-radius: 8px !important;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+  }}
+  .leaflet-bar a {{
+    background-color: rgba(15, 23, 42, 0.90) !important;
+    color: #f1f5f9 !important;
+    border-bottom: 1px solid #334155 !important;
+  }}
+  .leaflet-bar a:hover {{
+    background-color: #1e293b !important;
+    color: #38bdf8 !important;
+  }}
+
   #gps-btn {{
     pointer-events: auto;
     width: 36px;
@@ -287,8 +308,15 @@ html_content = f"""<!DOCTYPE html>
     font-size: 16px;
     cursor: pointer;
     box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
   }}
   #gps-btn:active {{ background: #0284c7; color: white; }}
+  #gps-btn.active-user {{
+    background: #0284c7;
+    color: #ffffff;
+    border-color: #38bdf8;
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+  }}
   
   /* FLOATING ACTION BUTTONS ON MAP (Bottom Right above profile) */
   #fab-group {{
@@ -726,22 +754,49 @@ map.on('zoom', updateCircleRadii);
 map.on('zoomend', updateCircleRadii);
 
 // ==========================================
-// MOBILE GPS "LOCATE ME" INTEGRATION
+// MOBILE GPS "LOCATE ME" & TRAIL TOGGLE
 // ==========================================
 let userLocationMarker = null;
 let userAccuracyCircle = null;
+let lastUserLatLng = null;
+let isAtUserLocation = false;
+const gpsBtn = document.getElementById('gps-btn');
 
-document.getElementById('gps-btn').addEventListener('click', function() {{
-  if (!navigator.geolocation) {{
-    if (typeof alert !== 'undefined') alert("Geolocation is not supported by your browser.");
-    return;
+gpsBtn.addEventListener('click', function() {{
+  if (isAtUserLocation) {{
+    // SECOND CLICK: Return to Stubai trail
+    map.fitBounds(trackPolyline.getBounds(), {{ padding: [25, 25], animate: true }});
+    isAtUserLocation = false;
+    gpsBtn.innerText = "🎯";
+    gpsBtn.title = "Find My Location";
+    gpsBtn.classList.remove('active-user');
+  }} else {{
+    // FIRST CLICK: Pan & zoom to current user location
+    if (!navigator.geolocation) {{
+      if (typeof alert !== 'undefined') alert("Geolocation is not supported by your browser.");
+      return;
+    }}
+    gpsBtn.innerText = "⏳";
+    gpsBtn.title = "Acquiring GPS...";
+    
+    if (lastUserLatLng) {{
+      map.setView(lastUserLatLng, 15, {{ animate: true }});
+      isAtUserLocation = true;
+      gpsBtn.innerText = "🏔️";
+      gpsBtn.title = "Return to Stubai Trail";
+      gpsBtn.classList.add('active-user');
+    }}
+    
+    map.locate({{ setView: true, maxZoom: 16, enableHighAccuracy: true }});
   }}
-  this.innerText = "⏳";
-  map.locate({{ setView: true, maxZoom: 16, enableHighAccuracy: true }});
 }});
 
 map.on('locationfound', function(e) {{
-  document.getElementById('gps-btn').innerText = "🎯";
+  lastUserLatLng = e.latlng;
+  isAtUserLocation = true;
+  gpsBtn.innerText = "🏔️";
+  gpsBtn.title = "Return to Stubai Trail";
+  gpsBtn.classList.add('active-user');
   if (userLocationMarker) {{
     userLocationMarker.setLatLng(e.latlng);
     userAccuracyCircle.setLatLng(e.latlng).setRadius(e.accuracy);
@@ -752,7 +807,12 @@ map.on('locationfound', function(e) {{
 }});
 
 map.on('locationerror', function(e) {{
-  document.getElementById('gps-btn').innerText = "🎯";
+  if (!lastUserLatLng) {{
+    isAtUserLocation = false;
+    gpsBtn.innerText = "🎯";
+    gpsBtn.title = "Find My Location";
+    gpsBtn.classList.remove('active-user');
+  }}
   if (typeof alert !== 'undefined') alert("GPS Location: " + e.message);
 }});
 

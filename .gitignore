@@ -1,7 +1,5 @@
-# Personal flight / booking documents
-XOA6ZB.pdf
-*ticket*.pdf
-*booking*.pdf
+# Personal flight / booking documents and large local PDF atlases
+*.pdf
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

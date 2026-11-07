@@ -749,7 +749,7 @@ html_content = f"""<!DOCTYPE html>
             <span class="card-date">07.09.2027 • יום שלישי</span>
             <span class="card-tag">יום הליכה 2 (פסגה)</span>
           </div>
-          <div class="card-title">🏔️ יום 2: Neue Regensburger Hütte ➔ פסגת Kreuzspitze (3,084 מ') ➔ חזרה לבקתה</div>
+          <div class="card-title">🏔️ יום 2: Neue Regensburger Hütte ➔ פסגת Kreuzspitze (3,084 מ') ➔ Neue Regensburger Hütte</div>
           <div class="card-metrics">
             <span class="metric-badge">מרחק: <strong>5.2 ק"מ</strong></span>
             <span class="metric-badge">עלייה: <strong>795+ מ'</strong></span>

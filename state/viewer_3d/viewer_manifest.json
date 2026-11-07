@@ -1,0 +1,16 @@
+{
+  "skill": "route3DViewerSKILL",
+  "route_title": "Stubital high Route 2027 Days 1-5",
+  "viewer_dir": "C:\\Users\\Rotem\\Documents\\Private\\Nemerim\\Austria 2027\\state\\viewer_3d",
+  "index_html": "C:\\Users\\Rotem\\Documents\\Private\\Nemerim\\Austria 2027\\state\\viewer_3d\\index.html",
+  "route_data_js": "C:\\Users\\Rotem\\Documents\\Private\\Nemerim\\Austria 2027\\state\\viewer_3d\\route_data.js",
+  "stats": {
+    "point_count": 2661,
+    "total_distance_km": 47.91,
+    "total_ascent_m": 3324,
+    "total_descent_m": 3852,
+    "min_ele_m": 1214,
+    "max_ele_m": 2880
+  },
+  "recommended_url": "http://127.0.0.1:8085/index.html"
+}

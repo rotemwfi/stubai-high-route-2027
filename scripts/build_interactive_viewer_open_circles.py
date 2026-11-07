@@ -493,6 +493,11 @@ html_content = f"""<!DOCTYPE html>
   .content-overlay-panel.active {{
     display: block;
   }}
+  #panel-sim3d.active {{
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }}
   .panel-sticky-bar {{
     position: sticky;
     top: 0;
@@ -646,10 +651,11 @@ html_content = f"""<!DOCTYPE html>
       <button id="close-sidebar" title="Close Menu">✕</button>
     </div>
     <div id="main-nav-menu">
-      <button class="nav-cat-btn active" data-panel="map" onclick="switchPanel('map')">🗺️ מפה</button>
-      <button class="nav-cat-btn" data-panel="schedule" onclick="switchPanel('schedule')">📅 לוח זמנים</button>
-      <button class="nav-cat-btn" data-panel="gear" onclick="switchPanel('gear')">🎒 רשימת ציוד</button>
-      <button class="nav-cat-btn" data-panel="huts" onclick="switchPanel('huts')">🏡 בקתות</button>
+      <button class="nav-cat-btn active" id="nav-btn-map" data-panel="map" onclick="switchPanel('map')">🗺️ מפה</button>
+      <button class="nav-cat-btn" id="nav-btn-schedule" data-panel="schedule" onclick="switchPanel('schedule')">📅 לוח זמנים</button>
+      <button class="nav-cat-btn" id="nav-btn-gear" data-panel="gear" onclick="switchPanel('gear')">🎒 רשימת ציוד</button>
+      <button class="nav-cat-btn" id="nav-btn-huts" data-panel="huts" onclick="switchPanel('huts')">🏡 בקתות</button>
+      <button class="nav-cat-btn" id="nav-btn-sim3d" data-panel="sim3d" onclick="switchPanel('sim3d')" style="grid-column: 1 / -1;">🏔️ הדמיית 3D (Fly-Through)</button>
     </div>
     <div id="coords-box">
       <div><strong>CURSOR UTM ZONE 32N:</strong></div>
@@ -946,6 +952,18 @@ html_content = f"""<!DOCTYPE html>
           <button class="card-btn-map" onclick="jumpToHutById('franz_senn')">📍 הצג במפה</button>
         </div>
       </div>
+    </div>
+
+    <!-- ==========================================
+         OVERLAY PANEL 4: הדמיית 3D (3D FLY-THROUGH)
+         ========================================== -->
+    <div id="panel-sim3d" class="content-overlay-panel">
+      <div class="panel-sticky-bar">
+        <button class="card-btn-map" onclick="openMobileSidebar()">☰ תפריט</button>
+        <strong style="font-size: 14px; color: #38bdf8;">🏔️ הדמיית 3D (Fly-Through)</strong>
+        <button class="card-btn-map" onclick="switchPanel('map')">🗺️ חזרה למפה</button>
+      </div>
+      <iframe id="sim3d-iframe" data-src="state/viewer_3d/index.html" title="3D Route Simulation" style="width: 100%; flex: 1; border: none; background: #090d16;"></iframe>
     </div>
   </div>
 
@@ -1647,7 +1665,7 @@ const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
 if ('serviceWorker' in navigator) {{
   window.addEventListener('load', () => {{
-    navigator.serviceWorker.register('./sw.js?v=4').then(reg => {{
+    navigator.serviceWorker.register('./sw.js?v=5').then(reg => {{
       reg.update();
     }}).catch(err => console.log('SW reg error:', err));
   }});
@@ -1714,12 +1732,26 @@ async function startOfflineDownload() {{
   }}
 
   const cache = await caches.open('stubai-tiles-v1');
+  const appCache = await caches.open('stubai-pwa-v5');
+  try {{
+    await appCache.addAll([
+      './state/viewer_3d/index.html',
+      './state/viewer_3d/styles.css',
+      './state/viewer_3d/app.js',
+      './state/viewer_3d/route_data.js',
+      'https://unpkg.com/maplibre-gl@4.3.2/dist/maplibre-gl.css',
+      'https://unpkg.com/maplibre-gl@4.3.2/dist/maplibre-gl.js',
+      'https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.11.0/proj4.js'
+    ]);
+  }} catch(e) {{}}
+
   const servers = ['a', 'b', 'c'];
-  const total = offlineTiles.length;
+  const tiles3d = offlineTiles.filter(([z]) => z <= 14);
+  const total = offlineTiles.length + tiles3d.length;
   let done = 0;
   const batchSize = 6;
 
-  for (let i = 0; i < total; i += batchSize) {{
+  for (let i = 0; i < offlineTiles.length; i += batchSize) {{
     const batch = offlineTiles.slice(i, i + batchSize);
     await Promise.all(batch.map(async ([z, x, y]) => {{
       const server = servers[(x + y) % servers.length];
@@ -1740,13 +1772,35 @@ async function startOfflineDownload() {{
       done++;
       const pct = Math.round((done / total) * 100);
       progressBar.style.width = pct + '%';
-      modalStatus.innerText = `Cached ${{done}} of ${{total}} map tiles (${{pct}}%)...`;
+      modalStatus.innerText = `Cached ${{done}} of ${{total}} 2D & 3D tiles (${{pct}}%)...`;
+    }}));
+  }}
+
+  for (let i = 0; i < tiles3d.length; i += batchSize) {{
+    const batch = tiles3d.slice(i, i + batchSize);
+    await Promise.all(batch.map(async ([z, x, y]) => {{
+      const demUrl = `https://s3.amazonaws.com/elevation-tiles-prod/terrarium/${{z}}/${{x}}/${{y}}.png`;
+      const satUrl = `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${{z}}/${{y}}/${{x}}`;
+      try {{
+        if (!(await cache.match(demUrl))) {{
+          const rDem = await fetch(demUrl, {{ mode: 'cors' }});
+          if (rDem && rDem.status === 200) await cache.put(demUrl, rDem);
+        }}
+        if (!(await cache.match(satUrl))) {{
+          const rSat = await fetch(satUrl, {{ mode: 'cors' }});
+          if (rSat && rSat.status === 200) await cache.put(satUrl, rSat);
+        }}
+      }} catch (err) {{}}
+      done++;
+      const pct = Math.round((done / total) * 100);
+      progressBar.style.width = pct + '%';
+      modalStatus.innerText = `Cached ${{done}} of ${{total}} 2D & 3D tiles (${{pct}}%)...`;
     }}));
   }}
 
   modalIcon.innerText = "✅";
-  modalTitle.innerText = "Map is 100% Offline Ready!";
-  modalStatus.innerHTML = "<strong>All 5 stages of the Stubai High Route are now stored on your phone!</strong><br/><br/>You can view the full topographic map, follow the trail, and use GPS even with zero cellular signal or in Airplane Mode.";
+  modalTitle.innerText = "Map & 3D Simulation Offline Ready!";
+  modalStatus.innerHTML = "<strong>All 5 stages of the Stubai High Route (2D Topographic Map + 3D Terrain Fly-Through) are now stored on your phone!</strong><br/><br/>You can view the map, run the 3D simulation, check your gear, and use GPS even with zero cellular signal.";
   modalClose.style.display = 'block';
   if (btnOffline) btnOffline.innerText = "📲 Install App";
   if (fabOffline) fabOffline.innerText = "📲 Install App";
@@ -1770,17 +1824,28 @@ function switchPanel(panelName) {{
   const schedBtn = document.getElementById('nav-btn-schedule');
   const gearBtn = document.getElementById('nav-btn-gear');
   const hutsBtn = document.getElementById('nav-btn-huts');
+  const sim3dBtn = document.getElementById('nav-btn-sim3d');
   if (mapBtn) mapBtn.classList.toggle('active', panelName === 'map');
   if (schedBtn) schedBtn.classList.toggle('active', panelName === 'schedule');
   if (gearBtn) gearBtn.classList.toggle('active', panelName === 'gear');
   if (hutsBtn) hutsBtn.classList.toggle('active', panelName === 'huts');
+  if (sim3dBtn) sim3dBtn.classList.toggle('active', panelName === 'sim3d');
 
   const pSched = document.getElementById('panel-schedule');
   const pGear = document.getElementById('panel-gear');
   const pHuts = document.getElementById('panel-huts');
+  const pSim3d = document.getElementById('panel-sim3d');
   if (pSched) pSched.classList.toggle('active', panelName === 'schedule');
   if (pGear) pGear.classList.toggle('active', panelName === 'gear');
   if (pHuts) pHuts.classList.toggle('active', panelName === 'huts');
+  if (pSim3d) pSim3d.classList.toggle('active', panelName === 'sim3d');
+
+  if (panelName === 'sim3d') {{
+    const iframe = document.getElementById('sim3d-iframe');
+    if (iframe && !iframe.getAttribute('src')) {{
+      iframe.setAttribute('src', iframe.getAttribute('data-src'));
+    }}
+  }}
 
   closeMobileSidebar();
 

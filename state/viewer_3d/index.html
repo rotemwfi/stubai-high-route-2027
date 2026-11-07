@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3D Interactive Route Fly-Through Viewer — Antigravity 2.0</title>
+  <!-- MapLibre GL JS v4 (3D Terrain + Sky, Zero-Key Default) -->
+  <link href="https://unpkg.com/maplibre-gl@4.3.2/dist/maplibre-gl.css" rel="stylesheet" />
+  <script src="https://unpkg.com/maplibre-gl@4.3.2/dist/maplibre-gl.js"></script>
+  <!-- Mapbox GL JS v3 (Loaded dynamically when Mapbox Token is active) -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet" />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+  <!-- CesiumJS for Google Photorealistic 3D Tiles -->
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.116/Build/Cesium/Cesium.js"></script>
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.116/Build/Cesium/Widgets/widgets.css" rel="stylesheet" />
+  <!-- Proj4js for live UTM Zone 32N HUD -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.11.0/proj4.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header id="topbar">
+    <div class="brand">
+      <span class="badge-3d">3D FLY-THROUGH</span>
+      <h1 id="route-title">Loading 3D Route...</h1>
+      <span id="route-stats" class="stats-pill"></span>
+    </div>
+    <div class="controls-right">
+      <label class="ctrl-label">3D Engine:
+        <select id="engine-select">
+          <option value="terrain3d">3D Satellite + AWS Terrarium DEM (Instant / No Key)</option>
+          <option value="topo3d">3D OpenTopoMap 1:25k Contours + DEM</option>
+          <option value="mapbox3d">Mapbox GL JS v3 3D Terrain (Token)</option>
+          <option value="google3d">Google Maps Photorealistic 3D Tiles (API Key)</option>
+        </select>
+      </label>
+      <button id="btn-keys" class="btn-secondary" title="Configure Mapbox or Google 3D Tiles API Keys">API Keys</button>
+      <label class="ctrl-label">Upload Route:
+        <input type="file" id="file-upload" accept=".gpx,.kml,.csv,.txt,.geojson,.json" />
+      </label>
+    </div>
+  </header>
+
+  <main id="viewport">
+    <div id="map3d"></div>
+    <div id="cesium3d" style="display:none;"></div>
+
+    <!-- Live Cockpit / Telemetry HUD -->
+    <div id="hud-box">
+      <div><strong>DIST:</strong> <span id="hud-dist">0.00 km</span></div>
+      <div><strong>ALT:</strong> <span id="hud-ele">0 m</span></div>
+      <div><strong>UTM 32N:</strong> <span id="hud-utm">--</span></div>
+      <div><strong>CAMERA:</strong> <span id="hud-cam">--</span></div>
+    </div>
+
+    <!-- Floating Fly-Through Flight Deck -->
+    <section id="flight-deck">
+      <div class="deck-buttons">
+        <button id="btn-play" class="btn-primary">&#9654; Fly Route</button>
+        <button id="btn-reset" class="btn-secondary">&#8634; Overview</button>
+        <label class="slider-lbl">Speed
+          <select id="speed-select">
+            <option value="0.1">0.1x</option>
+            <option value="0.25">0.25x</option>
+            <option value="0.5">0.5x</option>
+            <option value="1" selected>1.0x</option>
+            <option value="2">2.0x</option>
+            <option value="4">4.0x</option>
+          </select>
+        </label>
+        <label class="slider-lbl">Zoom
+          <input type="range" id="zoom-slider" min="11.0" max="16.5" step="0.1" value="14.0" />
+        </label>
+        <label class="slider-lbl">Pitch
+          <input type="range" id="pitch-slider" min="30" max="80" value="65" />
+        </label>
+        <label class="slider-lbl">3D Exaggeration
+          <input type="range" id="exag-slider" min="1.0" max="2.5" step="0.1" value="1.35" />
+        </label>
+      </div>
+      <div class="scrub-container">
+        <input type="range" id="route-scrubber" min="0" max="1000" value="0" />
+        <canvas id="elev-canvas" width="900" height="72"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <!-- API Key Modal for Mapbox GL JS & Google 3D Tiles -->
+  <div id="key-modal" class="modal hidden">
+    <div class="modal-card">
+      <h2>Configure 3D Provider Keys (Optional)</h2>
+      <p>The viewer runs immediately using 3D AWS Terrarium DEM + Esri Satellite. To switch to Mapbox GL JS v3 or Google Photorealistic 3D Tiles, enter your key below:</p>
+      <label>Mapbox Access Token (<code>pk....</code>):
+        <input type="text" id="input-mapbox-token" placeholder="pk.eyJ1Ijoi..." />
+      </label>
+      <label>Google Maps 3D Tiles API Key (<code>AIza...</code>):
+        <input type="text" id="input-google-key" placeholder="AIzaSy..." />
+      </label>
+      <div class="modal-actions">
+        <button id="btn-save-keys" class="btn-primary">Save &amp; Apply</button>
+        <button id="btn-close-keys" class="btn-secondary">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="route_data.js?v=3.0"></script>
+  <script src="app.js?v=3.0"></script>
+</body>
+</html>

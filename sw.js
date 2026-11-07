@@ -1,17 +1,24 @@
-const CACHE_NAME = 'stubai-pwa-v4';
+const CACHE_NAME = 'stubai-pwa-v5';
 const TILE_CACHE = 'stubai-tiles-v1';
 
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './export.gpx',
+  './Stubai route B.gpx',
   './icon-192.png',
   './icon-512.png',
   './apple-touch-icon.png',
+  './state/viewer_3d/index.html',
+  './state/viewer_3d/styles.css',
+  './state/viewer_3d/app.js',
+  './state/viewer_3d/route_data.js',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
   'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
-  'https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.0/proj4.js'
+  'https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.9.0/proj4.js',
+  'https://unpkg.com/maplibre-gl@4.3.2/dist/maplibre-gl.css',
+  'https://unpkg.com/maplibre-gl@4.3.2/dist/maplibre-gl.js',
+  'https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.11.0/proj4.js'
 ];
 
 self.addEventListener('install', (event) => {
@@ -40,11 +47,16 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // 1. Map Tiles (OpenTopoMap) -> Cache First, fallback to Network
-  if (url.hostname.includes('tile.opentopomap.org')) {
+  // 1. Map & 3D Terrain Tiles (OpenTopoMap, AWS Terrarium 3D DEM, Esri Satellite) -> Cache First, fallback to Network
+  if (
+    url.hostname.includes('tile.opentopomap.org') ||
+    url.hostname.includes('s3.amazonaws.com') ||
+    url.hostname.includes('server.arcgisonline.com')
+  ) {
     event.respondWith(
       caches.open(TILE_CACHE).then(async (cache) => {
-        const canonicalUrl = `https://a.tile.opentopomap.org${url.pathname}`;
+        const isOpenTopo = url.hostname.includes('tile.opentopomap.org');
+        const canonicalUrl = isOpenTopo ? `https://a.tile.opentopomap.org${url.pathname}` : event.request.url;
         const cachedResponse = (await cache.match(event.request)) || (await cache.match(canonicalUrl));
         if (cachedResponse) {
           return cachedResponse;
@@ -53,7 +65,9 @@ self.addEventListener('fetch', (event) => {
           const networkResponse = await fetch(event.request);
           if (networkResponse && networkResponse.status === 200) {
             cache.put(event.request, networkResponse.clone());
-            cache.put(canonicalUrl, networkResponse.clone());
+            if (isOpenTopo) {
+              cache.put(canonicalUrl, networkResponse.clone());
+            }
           }
           return networkResponse;
         } catch (err) {

@@ -24,7 +24,7 @@ else:
 transformer = pyproj.Transformer.from_crs("EPSG:4326", "EPSG:32632", always_xy=True)
 to_wgs = pyproj.Transformer.from_crs("EPSG:32632", "EPSG:4326", always_xy=True)
 
-tree = ET.parse("export.gpx")
+tree = ET.parse("Stubai route B.gpx")
 root = tree.getroot()
 raw_pts = []
 for p in root.findall(".//{*}trkpt"):
@@ -114,18 +114,20 @@ huts_html.append({
     "night": None
 })
 
-# Waypoint landmarks along profile
+# Waypoint landmarks along profile (Stubai route B.gpx - 48.02 km)
 profile_waypoints = [
     {"name": "Oberissalm", "km": 0.0, "ele": 1742, "night": None},
-    {"name": "Franz-Senn [N1]", "km": 10.3, "ele": 2147, "night": 1},
-    {"name": "Schrimmennieder", "km": 16.5, "ele": 2714, "night": None},
-    {"name": "Regensburger [N2]", "km": 19.5, "ele": 2286, "night": 2},
-    {"name": "Grawagrubennieder", "km": 23.5, "ele": 2880, "night": None},
-    {"name": "Dresdner [N3]", "km": 32.0, "ele": 2308, "night": 3},
-    {"name": "Peiljoch", "km": 34.0, "ele": 2676, "night": None},
-    {"name": "Sulzenau [N4]", "km": 38.0, "ele": 2191, "night": 4},
-    {"name": "Grawa Waterfall", "km": 42.7, "ele": 1530, "night": None},
-    {"name": "Ranalt (Finish)", "km": 50.2, "ele": 1214, "night": None}
+    {"name": "Franz-Senn", "km": 2.84, "ele": 2147, "night": None},
+    {"name": "Schrimmennieder", "km": 9.07, "ele": 2714, "night": None},
+    {"name": "Regensburger [N1]", "km": 12.09, "ele": 2286, "night": 1},
+    {"name": "Kreuzspitze", "km": 14.72, "ele": 3084, "night": None},
+    {"name": "Regensburger [N2]", "km": 17.33, "ele": 2286, "night": 2},
+    {"name": "Grawagrubennieder", "km": 21.26, "ele": 2880, "night": None},
+    {"name": "Dresdner [N3]", "km": 29.82, "ele": 2308, "night": 3},
+    {"name": "Peiljoch", "km": 31.77, "ele": 2676, "night": None},
+    {"name": "Sulzenau [N4]", "km": 35.84, "ele": 2191, "night": 4},
+    {"name": "Grawa Waterfall", "km": 40.51, "ele": 1530, "night": None},
+    {"name": "Ranalt (Finish)", "km": 48.02, "ele": 1214, "night": None}
 ]
 
 html_content = f"""<!DOCTYPE html>
@@ -675,7 +677,7 @@ html_content = f"""<!DOCTYPE html>
       <div class="floating-pill" id="menu-trigger">
         <span>☰</span> <strong>תפריט</strong>
       </div>
-      <div id="floating-coords">Stubai 50.2 km</div>
+      <div id="floating-coords">Stubai 48.0 km</div>
       <div id="gps-btn" title="Find My Location">🎯</div>
     </div>
     
@@ -692,7 +694,7 @@ html_content = f"""<!DOCTYPE html>
         <div class="profile-title">
           <span>📈</span>
           <span>PROFILE</span>
-          <span class="profile-meta">(50.2 km • +3,180 m)</span>
+          <span class="profile-meta">(48.0 km • +3,430 m)</span>
         </div>
         <div id="profile-readout">Drag across profile or trail to inspect...</div>
         <button id="close-profile" title="Hide Profile">✕</button>
@@ -713,8 +715,8 @@ html_content = f"""<!DOCTYPE html>
       </div>
       <div class="panel-body">
         <div class="view-hero">
-          <h2>📅 לוח זמנים ומסלול הטרק</h2>
-          <p>מסע של 5 ימי הליכה אלפיניים בעמק שטובאי, טירול, אוסטריה (05.09.2027 – 13.09.2027).</p>
+          <h2>📅 לוח זמנים ומסלול הטרק (Route B)</h2>
+          <p>מסע של 5 ימי הליכה אלפיניים בעמק שטובאי, טירול, אוסטריה (05.09.2027 – 13.09.2027) • סה"כ 48.0 ק"מ.</p>
         </div>
 
         <div class="timeline-card travel-day">
@@ -731,30 +733,30 @@ html_content = f"""<!DOCTYPE html>
             <span class="card-date">06.09.2027 • יום שני</span>
             <span class="card-tag">יום הליכה 1</span>
           </div>
-          <div class="card-title">⛰️ תחילת מסלול: Oberissalm ➔ Franz-Senn-Hütte</div>
+          <div class="card-title">⛰️ תחילת מסלול: Oberissalm ➔ Franz-Senn ➔ Neue Regensburger Hütte</div>
           <div class="card-metrics">
-            <span class="metric-badge">מרחק: <strong>10.3 ק"מ</strong></span>
-            <span class="metric-badge">עלייה: <strong>600+ מ'</strong></span>
-            <span class="metric-badge">ירידה: <strong>190- מ'</strong></span>
-            <span class="metric-badge">זמן: <strong>~3.5 שעות</strong></span>
+            <span class="metric-badge">מרחק: <strong>12.1 ק"מ</strong></span>
+            <span class="metric-badge">עלייה: <strong>1,020+ מ'</strong></span>
+            <span class="metric-badge">ירידה: <strong>475- מ'</strong></span>
+            <span class="metric-badge">זמן: <strong>~5.5–6 שעות</strong></span>
           </div>
-          <div class="card-desc">כניסה לעמק Alpeiner Tal ועלייה לבקתת פרנץ סן (2,147 מ'). לינה בבקתה (לילה 1).</div>
+          <div class="card-desc">עלייה מ-Oberissalm (1,742 מ') דרך בקתת Franz-Senn-Hütte (2,147 מ', ק"מ 2.8), חציית מעבר ההרים Schrimmennieder (2,714 מ') וירידה לבקתת נויה רגנסבורגר (2,286 מ'). לינה בבקתה (לילה 1).</div>
           <button class="card-btn-map" onclick="jumpToStage(1)">📍 הצג יום 1 במפה</button>
         </div>
 
         <div class="timeline-card">
           <div class="card-top">
             <span class="card-date">07.09.2027 • יום שלישי</span>
-            <span class="card-tag">יום הליכה 2</span>
+            <span class="card-tag">יום הליכה 2 (פסגה)</span>
           </div>
-          <div class="card-title">⛰️ יום 2: Franz-Senn-Hütte ➔ Neue Regensburger Hütte</div>
+          <div class="card-title">🏔️ יום 2: Neue Regensburger Hütte ➔ פסגת Kreuzspitze (3,084 מ') ➔ חזרה לבקתה</div>
           <div class="card-metrics">
-            <span class="metric-badge">מרחק: <strong>9.3 ק"מ</strong></span>
-            <span class="metric-badge">עלייה: <strong>880+ מ'</strong></span>
-            <span class="metric-badge">ירידה: <strong>740- מ'</strong></span>
-            <span class="metric-badge">זמן: <strong>~4.5 שעות</strong></span>
+            <span class="metric-badge">מרחק: <strong>5.2 ק"מ</strong></span>
+            <span class="metric-badge">עלייה: <strong>795+ מ'</strong></span>
+            <span class="metric-badge">ירידה: <strong>795- מ'</strong></span>
+            <span class="metric-badge">זמן: <strong>~3.5–4 שעות</strong></span>
           </div>
-          <div class="card-desc">חציית מעבר ההרים Schrimmennieder (2,714 מ') וירידה לבקתת נויה רגנסבורגר (2,286 מ'). לינה בבקתה (לילה 2).</div>
+          <div class="card-desc">יום פסגה (הלוך-חזור עם תיק קל): טיפוס מבקתת נויה רגנסבורגר דרך Jedlasgrübl אל פסגת ה-Kreuzspitze (3,084 מ') לתצפית פנורמית אדירה, וירידה חזרה לבקתת נויה רגנסבורגר ללילה שני (לילה 2).</div>
           <button class="card-btn-map" onclick="jumpToStage(2)">📍 הצג יום 2 במפה</button>
         </div>
 
@@ -766,11 +768,11 @@ html_content = f"""<!DOCTYPE html>
           <div class="card-title">⛰️ יום 3: Neue Regensburger Hütte ➔ Dresdner Hütte</div>
           <div class="card-metrics">
             <span class="metric-badge">מרחק: <strong>12.5 ק"מ</strong></span>
-            <span class="metric-badge">עלייה: <strong>950+ מ'</strong></span>
-            <span class="metric-badge">ירידה: <strong>930- מ'</strong></span>
+            <span class="metric-badge">עלייה: <strong>930+ מ'</strong></span>
+            <span class="metric-badge">ירידה: <strong>910- מ'</strong></span>
             <span class="metric-badge">זמן: <strong>~6.5 שעות</strong></span>
           </div>
-          <div class="card-desc">מעבר ליד אגם Falbesoner See, חציית מעבר Grawagrubennieder (2,880 מ') וירידה לבקתת דרזדנר (2,308 מ'). לינה בבקתה (לילה 3).</div>
+          <div class="card-desc">הליכה לאורך עמק Hohes Moos, מעבר ליד אגם Falbesoner See, חציית מעבר Grawagrubennieder (2,880 מ') וירידה לבקתת דרזדנר (2,308 מ'). לינה בבקתה (לילה 3).</div>
           <button class="card-btn-map" onclick="jumpToStage(3)">📍 הצג יום 3 במפה</button>
         </div>
 
@@ -782,8 +784,8 @@ html_content = f"""<!DOCTYPE html>
           <div class="card-title">⛰️ יום 4: Dresdner Hütte ➔ Sulzenauhütte</div>
           <div class="card-metrics">
             <span class="metric-badge">מרחק: <strong>6.0 ק"מ</strong></span>
-            <span class="metric-badge">עלייה: <strong>480+ מ'</strong></span>
-            <span class="metric-badge">ירידה: <strong>600- מ'</strong></span>
+            <span class="metric-badge">עלייה: <strong>555+ מ'</strong></span>
+            <span class="metric-badge">ירידה: <strong>675- מ'</strong></span>
             <span class="metric-badge">זמן: <strong>~3.5 שעות</strong></span>
           </div>
           <div class="card-desc">טיפוס לאוכף Peiljoch (2,676 מ') וירידה אל האגם הקרחוני ובקתת זולצנאו (2,191 מ'). לינה בבקתה (לילה 4).</div>
@@ -795,14 +797,14 @@ html_content = f"""<!DOCTYPE html>
             <span class="card-date">10.09–11.09.2027 • שישי–שבת</span>
             <span class="card-tag">סוף מסלול (יום 5)</span>
           </div>
-          <div class="card-title">⛰️ סוף מסלול: Sulzenauhütte ➔ ירידה לעמק Ranalt</div>
+          <div class="card-title">⛰️ סוף מסלול: Sulzenauhütte ➔ מפל Grawa ➔ ירידה לעמק Ranalt</div>
           <div class="card-metrics">
             <span class="metric-badge">מרחק: <strong>12.2 ק"מ</strong></span>
-            <span class="metric-badge">עלייה: <strong>550+ מ'</strong></span>
-            <span class="metric-badge">ירידה: <strong>1,480- מ'</strong></span>
-            <span class="metric-badge">זמן: <strong>~5 שעות</strong></span>
+            <span class="metric-badge">עלייה: <strong>130+ מ'</strong></span>
+            <span class="metric-badge">ירידה: <strong>1,105- מ'</strong></span>
+            <span class="metric-badge">זמן: <strong>~4.5–5 שעות</strong></span>
           </div>
-          <div class="card-desc">מעבר דרך Nürnberger Hütte / מפל Grawa וירידה לסיום המסלול ב-Ranalt.</div>
+          <div class="card-desc">ירידה מבקתת זולצנאו דרך Sulzenaualm ומפל Grawa המרהיב אל סיום המסלול ב-Ranalt / Falbeson (1,214 מ').</div>
           <button class="card-btn-map" onclick="jumpToStage(5)">📍 הצג יום 5 במפה</button>
         </div>
 
@@ -880,37 +882,22 @@ html_content = f"""<!DOCTYPE html>
       </div>
       <div class="panel-body">
         <div class="view-hero">
-          <h2>🏡 בקתות הלינה בטרק</h2>
-          <p>4 בקתות אלפיניות לאורך המסלול. המחירים כוללים חצי פנסיון (HB).</p>
-        </div>
-
-        <div class="hut-detail-card">
-          <div class="hut-header">
-            <div class="hut-name">Franz-Senn-Hütte</div>
-            <span class="hut-badge-night">לילה 1</span>
-          </div>
-          <div class="hut-key-stats">
-            <div><div class="hut-stat-label">צ'ק-אין:</div><div class="hut-stat-val">06.09.2027</div></div>
-            <div><div class="hut-stat-label">מחיר משוער (HB):</div><div class="hut-stat-val price">120 €</div></div>
-            <div><div class="hut-stat-label">גובה:</div><div class="hut-stat-val">2,147 מ'</div></div>
-            <div><div class="hut-stat-label">סיום מקטע:</div><div class="hut-stat-val">יום 1 (10.3 ק"מ)</div></div>
-          </div>
-          <div class="hut-desc">בקתה מרווחת בעמק Alpeiner Tal עם חדר ייבוש נעליים, מקלחות חמות וארוחת ערב משותפת. סדין/ליינר חובה.</div>
-          <button class="card-btn-map" onclick="jumpToHutById('franz_senn')">📍 הצג במפה</button>
+          <h2>🏡 בקתות הלינה בטרק (4 לילות ב-3 בקתות)</h2>
+          <p>לילות 1–2 בבקתת Neue Regensburger, לילה 3 ב-Dresdner, ולילה 4 ב-Sulzenau. המחירים כוללים חצי פנסיון (HB).</p>
         </div>
 
         <div class="hut-detail-card">
           <div class="hut-header">
             <div class="hut-name">Neue Regensburger Hütte</div>
-            <span class="hut-badge-night">לילה 2</span>
+            <span class="hut-badge-night">לילות 1–2 (2 לילות)</span>
           </div>
           <div class="hut-key-stats">
-            <div><div class="hut-stat-label">צ'ק-אין:</div><div class="hut-stat-val">07.09.2027</div></div>
-            <div><div class="hut-stat-label">מחיר משוער (HB):</div><div class="hut-stat-val price">120 €</div></div>
+            <div><div class="hut-stat-label">צ'ק-אין (2 לילות):</div><div class="hut-stat-val">06.09.2027 – 08.09.2027</div></div>
+            <div><div class="hut-stat-label">מחיר משוער (HB):</div><div class="hut-stat-val price">120 € ללילה (240 € סה"כ)</div></div>
             <div><div class="hut-stat-label">גובה:</div><div class="hut-stat-val">2,286 מ'</div></div>
-            <div><div class="hut-stat-label">סיום מקטע:</div><div class="hut-stat-val">יום 2 (9.3 ק"מ)</div></div>
+            <div><div class="hut-stat-label">סיום מקטעים:</div><div class="hut-stat-val">יום 1 (12.1 ק"מ) + יום 2 (5.2 ק"מ)</div></div>
           </div>
-          <div class="hut-desc">ממוקמת על מצוק מול מפל אדיר עם מרפסת פנורמית ומטבח מצוין. סדין/ליינר ונעלי בית חובה.</div>
+          <div class="hut-desc">ממוקמת על מצוק מול מפל אדיר עם מרפסת פנורמית ומטבח מצוין. בסיס יציאה ליום הפסגה ל-Kreuzspitze (3,084 מ') ביום השני. סדין/ליינר ונעלי בית חובה.</div>
           <button class="card-btn-map" onclick="jumpToHutById('regensburger')">📍 הצג במפה</button>
         </div>
 
@@ -942,6 +929,21 @@ html_content = f"""<!DOCTYPE html>
           </div>
           <div class="hut-desc">בקתה אלפינית קלאסית בעמק זולצנאו ליד האגם הקרחוני והמפלים. מומלץ להצטייד במזומן באירו.</div>
           <button class="card-btn-map" onclick="jumpToHutById('sulzenau')">📍 הצג במפה</button>
+        </div>
+
+        <div class="hut-detail-card" style="opacity: 0.85; border-style: dashed;">
+          <div class="hut-header">
+            <div class="hut-name">Franz-Senn-Hütte (עצירת התרעננות ביום 1)</div>
+            <span class="hut-badge-night" style="background: #475569;">מעבר בלבד (ללא לינה)</span>
+          </div>
+          <div class="hut-key-stats">
+            <div><div class="hut-stat-label">תאריך מעבר:</div><div class="hut-stat-val">06.09.2027 (יום 1)</div></div>
+            <div><div class="hut-stat-label">מיקום במסלול:</div><div class="hut-stat-val">ק"מ 2.8</div></div>
+            <div><div class="hut-stat-label">גובה:</div><div class="hut-stat-val">2,147 מ'</div></div>
+            <div><div class="hut-stat-label">סטטוס:</div><div class="hut-stat-val">עצירת קפה/מרק בדרך ל-Regensburger</div></div>
+          </div>
+          <div class="hut-desc">נחלוף על פני הבקתה ביום הראשון (אחרי 2.8 ק"מ של עלייה מ-Oberissalm) לפני המשך הטיפוס למעבר Schrimmennieder (2,714 מ').</div>
+          <button class="card-btn-map" onclick="jumpToHutById('franz_senn')">📍 הצג במפה</button>
         </div>
       </div>
     </div>
@@ -1274,13 +1276,13 @@ let activeProfileIndex = null;
 
 const profileWaypoints = {json.dumps(profile_waypoints)};
 
-// STAGES AND STAGE-RELATIVE DISTANCE
+// STAGES AND STAGE-RELATIVE DISTANCE (Stubai route B.gpx - 48.02 km)
 const stages = [
-  {{ day: 1, name: "Stage 1", startName: "Oberissalm", d0: 0.0, d1: 10.26 }},
-  {{ day: 2, name: "Stage 2", startName: "Franz-Senn-Hütte", d0: 10.26, d1: 19.51 }},
-  {{ day: 3, name: "Stage 3", startName: "Neue Regensburger Hütte", d0: 19.51, d1: 32.00 }},
-  {{ day: 4, name: "Stage 4", startName: "Dresdner Hütte", d0: 32.00, d1: 38.02 }},
-  {{ day: 5, name: "Stage 5", startName: "Sulzenauhütte", d0: 38.02, d1: 50.20 }}
+  {{ day: 1, name: "Stage 1", startName: "Oberissalm", d0: 0.0, d1: 12.09 }},
+  {{ day: 2, name: "Stage 2", startName: "Neue Regensburger Hütte (Kreuzspitze)", d0: 12.09, d1: 17.33 }},
+  {{ day: 3, name: "Stage 3", startName: "Neue Regensburger Hütte", d0: 17.33, d1: 29.82 }},
+  {{ day: 4, name: "Stage 4", startName: "Dresdner Hütte", d0: 29.82, d1: 35.84 }},
+  {{ day: 5, name: "Stage 5", startName: "Sulzenauhütte", d0: 35.84, d1: 48.02 }}
 ];
 
 function getDayInfo(distKm) {{
@@ -1326,7 +1328,7 @@ function drawProfile(hoverIndex) {{
   const plotH = H - padTop - padBottom;
   
   const minEle = 1000;
-  const maxEle = 3000;
+  const maxEle = 3200;
   const maxDist = {total_dist_km};
   
   function getX(distKm) {{
@@ -1405,7 +1407,7 @@ function drawProfile(hoverIndex) {{
     const wx = getX(wp.km);
     const wy = getY(wp.ele);
     const isNightHut = wp.night !== null;
-    if (isMobile && !isNightHut && wp.km !== 0.0 && wp.km !== 50.2) return; // omit minor ticks on mobile to stay clear
+    if (isMobile && !isNightHut && wp.km !== 0.0 && wp.km !== 48.02 && wp.name !== 'Kreuzspitze') return; // omit minor ticks on mobile to stay clear
     
     ctx.strokeStyle = isNightHut ? '#38bdf8' : 'rgba(148, 163, 184, 0.5)';
     ctx.lineWidth = isNightHut ? 1.4 : 1.0;
@@ -1794,7 +1796,7 @@ function jumpToStage(dayNum) {{
   switchPanel('map');
   const st = stages.find(s => s.day === dayNum);
   if (!st) return;
-  const stagePts = trackPoints.filter(p => p[3] >= st.d0 && p[3] <= st.d1).map(p => [p[0], p[1]]);
+  const stagePts = trackPoints.filter(p => p.dist >= st.d0 && p.dist <= st.d1).map(p => [p.lat, p.lon]);
   if (stagePts.length > 0) {{
     map.fitBounds(L.latLngBounds(stagePts), {{ padding: [45, 45], animate: true }});
   }}

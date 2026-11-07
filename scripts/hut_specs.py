@@ -10,26 +10,15 @@ to_wgs84 = pyproj.Transformer.from_crs("EPSG:32632", "EPSG:4326", always_xy=True
 # badge_offset: (dE, dN) offset for external badge [Night X] outside the circle
 HUTS = [
     {
-        "id": "franz_senn",
-        "name": "Franz-Senn-Hütte",
-        "label": "Franz-Senn-Hütte [Night 1 • 2,147m]",
-        "badge": "Franz-Senn-Hütte [Night 1 • 2,147m]",
-        "e": 664611, "n": 5216908,
-        "circle_e": 664611, "circle_n": 5216908,
-        "circle_r": 165,
-        "badge_offset": (0, 195),
-        "ele": "2,147m", "overnight": True, "night": 1
-    },
-    {
         "id": "regensburger",
         "name": "Neue Regensburger Hütte",
-        "label": "Neue Regensburger Hütte [Night 2 • 2,286m]",
-        "badge": "Neue Regensburger Hütte [Night 2 • 2,286m]",
+        "label": "Neue Regensburger Hütte [Nights 1–2 • 2,286m]",
+        "badge": "Neue Regensburger Hütte [Nights 1–2 • 2,286m]",
         "e": 666952, "n": 5213592,
         "circle_e": 666950, "circle_n": 5213525,  # Shifted ~67m South so circle frames building + text below it
         "circle_r": 165,
         "badge_offset": (0, 195),
-        "ele": "2,286m", "overnight": True, "night": 2
+        "ele": "2,286m", "overnight": True, "night": "1-2"
     },
     {
         "id": "dresdner",
@@ -55,7 +44,7 @@ HUTS = [
     },
     {
         "id": "oberissalm",
-        "name": "Oberissalm",
+        "name": "Oberissalm (Trailhead)",
         "label": "Oberissalm (1,742m • Trailhead)",
         "badge": "Oberissalm (Trailhead)",
         "e": 666518, "n": 5218158,
@@ -63,6 +52,28 @@ HUTS = [
         "circle_r": 140,
         "badge_offset": (0, 160),
         "ele": "1,742m", "overnight": False
+    },
+    {
+        "id": "franz_senn",
+        "name": "Franz-Senn-Hütte (Day 1 Pass-Through)",
+        "label": "Franz-Senn-Hütte (2,147m • Day 1)",
+        "badge": "Franz-Senn-Hütte (2,147m)",
+        "e": 664611, "n": 5216908,
+        "circle_e": 664611, "circle_n": 5216908,
+        "circle_r": 165,
+        "badge_offset": (0, 195),
+        "ele": "2,147m", "overnight": False
+    },
+    {
+        "id": "kreuzspitze",
+        "name": "Kreuzspitze Summit (Day 2 Peak)",
+        "label": "Kreuzspitze (3,084m • Day 2 Summit)",
+        "badge": "Kreuzspitze (3,084m)",
+        "e": 665732, "n": 5214536,
+        "circle_e": 665732, "circle_n": 5214536,
+        "circle_r": 140,
+        "badge_offset": (0, 160),
+        "ele": "3,084m", "overnight": False
     },
     {
         "id": "alpeineralm",
